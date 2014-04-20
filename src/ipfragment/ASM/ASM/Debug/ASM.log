@@ -1,0 +1,43 @@
+﻿生成启动时间为 2014/3/10 9:48:01。
+     1>项目“D:\research\FIT\code\ASM\ASM\ASM.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Debug\ASM.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         E:\Program Files\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ASM.cpp
+         ASM.cpp
+     1>d:\research\fit\code\asm\asm\asm.cpp(19): warning C4305: “初始化”: 从“double”到“float”截断
+     1>d:\research\fit\code\asm\asm\asm.cpp(20): warning C4305: “初始化”: 从“double”到“float”截断
+     1>d:\research\fit\code\asm\asm\asm.cpp(21): warning C4305: “初始化”: 从“double”到“float”截断
+     1>d:\research\fit\code\asm\asm\asm.cpp(98): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\research\fit\code\asm\asm\asm.cpp(101): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\research\fit\code\asm\asm\asm.cpp(102): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\research\fit\code\asm\asm\asm.cpp(106): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\research\fit\code\asm\asm\asm.cpp(107): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\research\fit\code\asm\asm\asm.cpp(108): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\research\fit\code\asm\asm\asm.cpp(130): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 e:\program files\vc\include\stdio.h(234) : 参见“fopen”的声明
+     1>d:\research\fit\code\asm\asm\asm.cpp(169): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 e:\program files\vc\include\stdio.h(234) : 参见“fopen”的声明
+     1>d:\research\fit\code\asm\asm\asm.cpp(212): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 e:\program files\vc\include\stdio.h(234) : 参见“fopen”的声明
+     1>d:\research\fit\code\asm\asm\asm.cpp(396): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 e:\program files\vc\include\string.h(105) : 参见“strcpy”的声明
+       ManifestResourceCompile:
+         所有输出均为最新。
+       Link:
+         E:\Program Files\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\research\FIT\code\ASM\Debug\ASM.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\ASM.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\research\FIT\code\ASM\Debug\ASM.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\research\FIT\code\ASM\Debug\ASM.lib" /MACHINE:X86 Debug\ASM.exe.embed.manifest.res
+         Debug\ASM.obj
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\ASM.exe.embed.manifest" /manifest Debug\ASM.exe.intermediate.manifest
+         所有输出均为最新。
+       LinkEmbedManifest:
+         所有输出均为最新。
+         ASM.vcxproj -> D:\research\FIT\code\ASM\Debug\ASM.exe
+       FinalizeBuildStatus:
+         正在删除文件“Debug\ASM.unsuccessfulbuild”。
+         正在对“Debug\ASM.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“D:\research\FIT\code\ASM\ASM\ASM.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:03.90

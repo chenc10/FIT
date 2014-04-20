@@ -1,0 +1,75 @@
+SeqN:  0    Numof-Tran:5350    Numof-Child:  3    feature item:
+-100.0000% of all the Transactions are covered by the features till this level
+ |SeqN:  1    F-SeqN:  0    Numof-Tran:4131    Numof-Child:  3    feature item:(@4)20 
+ |SeqN:  2    F-SeqN:  0    Numof-Tran:624    Numof-Child:  1    feature item:(@0)50 
+ |SeqN:  3    F-SeqN:  0    Numof-Tran:581    Numof-Child:  1    feature item:(@0)43 
+--99.7383% of all the Transactions are covered by the features till this level
+ | |SeqN:  4    F-SeqN:  1    Numof-Tran:1295    Numof-Child:  2    feature item:(@4)20 (@3)45 
+ | |SeqN:  5    F-SeqN:  1    Numof-Tran:1169    Numof-Child:  2    feature item:(@4)20 (@2)53 
+ | |SeqN:  6    F-SeqN:  1    Numof-Tran:1149    Numof-Child:  2    feature item:(@4)20 (@3)52 
+ | |SeqN:  7    F-SeqN:  2    Numof-Tran:606    Numof-Child:  1    feature item:(@0)50 (@1)41 
+ | |SeqN:  8    F-SeqN:  3    Numof-Tran:581    Numof-Child:  1    feature item:(@0)43 (@1)57 
+---89.7196% of all the Transactions are covered by the features till this level
+ | | |SeqN:  9    F-SeqN:  4    Numof-Tran:690    Numof-Child:  1    feature item:(@4)20 (@3)45 (@6)0D 
+ | | |SeqN: 10    F-SeqN:  4    Numof-Tran:605    Numof-Child:  1    feature item:(@4)20 (@3)45 (@0)53 
+ | | |SeqN: 11    F-SeqN:  5    Numof-Tran:607    Numof-Child:  1    feature item:(@4)20 (@2)53 (@3)54 
+ | | |SeqN: 12    F-SeqN:  5    Numof-Tran:562    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 
+ | | |SeqN: 13    F-SeqN:  6    Numof-Tran:577    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 
+ | | |SeqN: 14    F-SeqN:  6    Numof-Tran:572    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)52 
+ | | |SeqN: 15    F-SeqN:  7    Numof-Tran:606    Numof-Child:  1    feature item:(@0)50 (@1)41 (@2)53 
+ | | |SeqN: 16    F-SeqN:  8    Numof-Tran:581    Numof-Child:  1    feature item:(@0)43 (@1)57 (@2)44 
+----89.7196% of all the Transactions are covered by the features till this level
+ | | | |SeqN: 17    F-SeqN:  9    Numof-Tran:690    Numof-Child:  1    feature item:(@4)20 (@3)45 (@6)0D (@7)0A 
+ | | | |SeqN: 18    F-SeqN: 10    Numof-Tran:605    Numof-Child:  1    feature item:(@4)20 (@3)45 (@0)53 (@1)49 
+ | | | |SeqN: 19    F-SeqN: 11    Numof-Tran:541    Numof-Child:  1    feature item:(@4)20 (@2)53 (@3)54 (@0)52 
+ | | | |SeqN: 20    F-SeqN: 12    Numof-Tran:562    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 
+ | | | |SeqN: 21    F-SeqN: 13    Numof-Tran:577    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 
+ | | | |SeqN: 22    F-SeqN: 14    Numof-Tran:572    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)52 (@1)45 
+ | | | |SeqN: 23    F-SeqN: 15    Numof-Tran:606    Numof-Child:  1    feature item:(@0)50 (@1)41 (@2)53 (@3)56 
+ | | | |SeqN: 24    F-SeqN: 16    Numof-Tran:581    Numof-Child:  0    feature item:(@0)43 (@1)57 (@2)44 (@3)20 
+-----88.4860% of all the Transactions are covered by the features till this level
+ | | | | |SeqN: 25    F-SeqN: 17    Numof-Tran:689    Numof-Child:  1    feature item:(@4)20 (@3)45 (@6)0D (@7)0A (@0)54 
+ | | | | |SeqN: 26    F-SeqN: 18    Numof-Tran:605    Numof-Child:  0    feature item:(@4)20 (@3)45 (@0)53 (@1)49 (@2)5A 
+ | | | | |SeqN: 27    F-SeqN: 19    Numof-Tran:541    Numof-Child:  0    feature item:(@4)20 (@2)53 (@3)54 (@0)52 (@1)45 
+ | | | | |SeqN: 28    F-SeqN: 20    Numof-Tran:562    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 
+ | | | | |SeqN: 29    F-SeqN: 21    Numof-Tran:577    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 
+ | | | | |SeqN: 30    F-SeqN: 22    Numof-Tran:572    Numof-Child:  0    feature item:(@4)20 (@3)52 (@0)52 (@1)45 (@2)54 
+ | | | | |SeqN: 31    F-SeqN: 23    Numof-Tran:606    Numof-Child:  1    feature item:(@0)50 (@1)41 (@2)53 (@3)56 (@4)0D 
+------88.4673% of all the Transactions are covered by the features till this level
+ | | | | | |SeqN: 32    F-SeqN: 25    Numof-Tran:689    Numof-Child:  1    feature item:(@4)20 (@3)45 (@6)0D (@7)0A (@0)54 (@1)59 
+ | | | | | |SeqN: 33    F-SeqN: 28    Numof-Tran:552    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 (@8)73 
+ | | | | | |SeqN: 34    F-SeqN: 29    Numof-Tran:558    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E 
+ | | | | | |SeqN: 35    F-SeqN: 31    Numof-Tran:606    Numof-Child:  0    feature item:(@0)50 (@1)41 (@2)53 (@3)56 (@4)0D (@5)0A 
+-------87.9252% of all the Transactions are covered by the features till this level
+ | | | | | | |SeqN: 36    F-SeqN: 32    Numof-Tran:689    Numof-Child:  1    feature item:(@4)20 (@3)45 (@6)0D (@7)0A (@0)54 (@1)59 (@2)50 
+ | | | | | | |SeqN: 37    F-SeqN: 33    Numof-Tran:541    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 (@8)73 (@5)49 
+ | | | | | | |SeqN: 38    F-SeqN: 34    Numof-Tran:558    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D 
+--------87.7196% of all the Transactions are covered by the features till this level
+ | | | | | | | |SeqN: 39    F-SeqN: 36    Numof-Tran:612    Numof-Child:  0    feature item:(@4)20 (@3)45 (@6)0D (@7)0A (@0)54 (@1)59 (@2)50 (@5)49 
+ | | | | | | | |SeqN: 40    F-SeqN: 37    Numof-Tran:541    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 (@8)73 (@5)49 (@6)45 
+ | | | | | | | |SeqN: 41    F-SeqN: 38    Numof-Tran:558    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D (@15)0A 
+---------86.2804% of all the Transactions are covered by the features till this level
+ | | | | | | | | |SeqN: 42    F-SeqN: 40    Numof-Tran:541    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 (@8)73 (@5)49 (@6)45 (@7)55 
+ | | | | | | | | |SeqN: 43    F-SeqN: 41    Numof-Tran:557    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D (@15)0A (@5)61 
+----------86.2617% of all the Transactions are covered by the features till this level
+ | | | | | | | | | |SeqN: 44    F-SeqN: 42    Numof-Tran:541    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 (@8)73 (@5)49 (@6)45 (@7)55 (@9)65 
+ | | | | | | | | | |SeqN: 45    F-SeqN: 43    Numof-Tran:557    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D (@15)0A (@5)61 (@6)6E 
+-----------86.2617% of all the Transactions are covered by the features till this level
+ | | | | | | | | | | |SeqN: 46    F-SeqN: 44    Numof-Tran:541    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 (@8)73 (@5)49 (@6)45 (@7)55 (@9)65 (@10)72 
+ | | | | | | | | | | |SeqN: 47    F-SeqN: 45    Numof-Tran:557    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D (@15)0A (@5)61 (@6)6E (@7)6F 
+------------86.2617% of all the Transactions are covered by the features till this level
+ | | | | | | | | | | | |SeqN: 48    F-SeqN: 46    Numof-Tran:541    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 (@8)73 (@5)49 (@6)45 (@7)55 (@9)65 (@10)72 (@11)40 
+ | | | | | | | | | | | |SeqN: 49    F-SeqN: 47    Numof-Tran:557    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D (@15)0A (@5)61 (@6)6E (@7)6F (@9)79 
+-------------86.2617% of all the Transactions are covered by the features till this level
+ | | | | | | | | | | | | |SeqN: 50    F-SeqN: 48    Numof-Tran:541    Numof-Child:  1    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 (@8)73 (@5)49 (@6)45 (@7)55 (@9)65 (@10)72 (@11)40 (@12)0D 
+ | | | | | | | | | | | | |SeqN: 51    F-SeqN: 49    Numof-Tran:557    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D (@15)0A (@5)61 (@6)6E (@7)6F (@9)79 (@10)6D 
+--------------86.2617% of all the Transactions are covered by the features till this level
+ | | | | | | | | | | | | | |SeqN: 52    F-SeqN: 50    Numof-Tran:541    Numof-Child:  0    feature item:(@4)20 (@2)53 (@0)50 (@1)41 (@3)53 (@8)73 (@5)49 (@6)45 (@7)55 (@9)65 (@10)72 (@11)40 (@12)0D (@13)0A 
+ | | | | | | | | | | | | | |SeqN: 53    F-SeqN: 51    Numof-Tran:557    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D (@15)0A (@5)61 (@6)6E (@7)6F (@9)79 (@10)6D (@11)6F 
+---------------86.2617% of all the Transactions are covered by the features till this level
+ | | | | | | | | | | | | | | |SeqN: 54    F-SeqN: 53    Numof-Tran:557    Numof-Child:  1    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D (@15)0A (@5)61 (@6)6E (@7)6F (@9)79 (@10)6D (@11)6F (@12)75 
+----------------86.2617% of all the Transactions are covered by the features till this level
+ | | | | | | | | | | | | | | | |SeqN: 55    F-SeqN: 54    Numof-Tran:557    Numof-Child:  0    feature item:(@4)20 (@3)52 (@0)55 (@1)53 (@2)45 (@8)6E (@14)0D (@15)0A (@5)61 (@6)6E (@7)6F (@9)79 (@10)6D (@11)6F (@12)75 (@13)73 
+
+
+87.7009% of all the Transactions are covered by this feature

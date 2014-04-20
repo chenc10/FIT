@@ -1,0 +1,7 @@
+// time: 2014.4.5
+/* function:
+	can satisfy most function
+	problem:
+		the output result is subdued to the hash.c, different random numbers correspond to different output
+			(include the length of result file and the statistic number of UDP and TCP flow
+*/

@@ -1,0 +1,12 @@
+	Numof-Tran:    8	
+(@0 92)6E n (@0 86)65 e (@0 197)76 v (@0 0)47 G 
+	Numof-Tran:   16	
+(@0 62)63 c (@0 59)6E n (@0 73)65 e (@0 77)6F o (@0 0)50 P 
+
+
+63.1579% of all the Transactions are covered by this feature
+Parameter: 
+	FThreshold: 0.20;
+ 	WThreshold: 0.20;
+ 	DiscardThreshold: 0.30;
+ 	CoverThreshold: 0.80;

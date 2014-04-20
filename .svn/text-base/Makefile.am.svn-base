@@ -1,0 +1,7 @@
+## $Id$
+AUTOMAKE_OPTIONS=foreign 
+SUBDIRS = src 
+
+INCLUDES = @INCLUDES@
+
+

@@ -1,0 +1,39 @@
+﻿生成启动时间为 2014/2/22 11:09:46。
+     1>项目“D:\research\FIT\code\ASM\ASM\ASM.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Release\ASM.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         E:\Program Files\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ASM.cpp
+         ASM.cpp
+     1>ASM.cpp(19): warning C4305: “初始化”: 从“double”到“float”截断
+     1>ASM.cpp(20): warning C4305: “初始化”: 从“double”到“float”截断
+     1>ASM.cpp(21): warning C4305: “初始化”: 从“double”到“float”截断
+     1>ASM.cpp(95): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>ASM.cpp(98): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>ASM.cpp(99): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>ASM.cpp(103): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>ASM.cpp(104): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>ASM.cpp(105): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>ASM.cpp(127): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 E:\Program Files\VC\include\stdio.h(234) : 参见“fopen”的声明
+     1>ASM.cpp(166): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 E:\Program Files\VC\include\stdio.h(234) : 参见“fopen”的声明
+     1>ASM.cpp(209): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 E:\Program Files\VC\include\stdio.h(234) : 参见“fopen”的声明
+     1>ASM.cpp(362): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 E:\Program Files\VC\include\string.h(105) : 参见“strcpy”的声明
+       Link:
+         E:\Program Files\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\research\FIT\code\ASM\Release\ASM.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\ASM.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\research\FIT\code\ASM\Release\ASM.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\research\FIT\code\ASM\Release\ASM.lib" /MACHINE:X86 Release\ASM.obj
+         正在生成代码
+         已完成代码的生成
+         ASM.vcxproj -> D:\research\FIT\code\ASM\Release\ASM.exe
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"D:\research\FIT\code\ASM\Release\ASM.exe;#1" /manifest Release\ASM.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         正在删除文件“Release\ASM.unsuccessfulbuild”。
+         正在对“Release\ASM.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“D:\research\FIT\code\ASM\ASM\ASM.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:03.45

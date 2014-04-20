@@ -1,0 +1,41 @@
+autoscan: warning: missing AC_CHECK_FUNCS([inet_ntoa]) wanted by: 
+	src/libnids.c:268
+	src/libnids.c:269
+	src/libnids.c:397
+	src/libnids.c:398
+	src/libnids.c:412
+	src/libnids.c:413
+	src/libnids.c:429
+	src/libnids.c:430
+autoscan: warning: missing AC_CHECK_FUNCS([memmove]) wanted by: 
+	src/tcp.c:406
+	src/ip_options.c:156
+autoscan: warning: missing AC_CHECK_FUNCS([memset]) wanted by: 
+	src/tcp.c:288
+	src/flat.c:68
+	src/ip_options.c:108
+	src/hash.c:116
+	src/ip_fragment.c:218
+	src/ip_fragment.c:407
+	src/tptd.c:94
+	src/udp.c:467
+	src/backup/udp.c:264
+autoscan: warning: missing AC_CHECK_FUNCS([pow]) wanted by: 
+	src/udp.c:276
+	src/backup/udp.c:156
+autoscan: warning: missing AC_FUNC_MALLOC wanted by: 
+	src/util.c:26
+	src/tcp.c:85
+	src/tcp.c:323
+	src/tcp.c:551
+	src/tcp.c:938
+	src/libnids.c:378
+	src/libnids.c:379
+	src/flat.c:46
+	src/scan.c:94
+	src/ip_fragment.c:197
+	src/ip_fragment.c:490
+	src/ip_fragment.c:729
+	src/udp.c:195
+autoscan: warning: missing AC_FUNC_REALLOC wanted by: 
+	src/tcp.c:331
