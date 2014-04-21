@@ -462,13 +462,12 @@ void copy_item(Item * A, Item * B)
 //all spliting can be regarded as two kinds: the spliting of the same level and the spliting acrossing levels
 void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tnode * Created2)
 {//deviding the Transactions into to clusters and save them into Created1 and Created2 irrespectively
-
 	MMostItem.MaxNum = 0;
 	MMostItem.MItem = NULL;
-	for( int i = 0, s = 0; i < Root->TTransactionNum; i ++)
+	for(int i = 0, s = 0; i < Root->TTransactionNum; i ++)
 		//get the item as the most frequent item
 		for( int j = 0; j < PACKETNUMSIZE; j ++)
-			for( int k = 0; k < Root->TTransaction[i].PacketNum[j]; k ++)
+			for(int  k = 0; k < Root->TTransaction[i].PacketNum[j]; k ++)
 				if(!(Root->TTransaction[i].ItemArray[j][k].IsVisited))
 					{
 					for( int l = 0; l < Root->TLevel; l ++)
@@ -484,27 +483,6 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 						}
 					calculate_support(Root->TTransaction[i].ItemArray[j]+k,Root);
 					}
-			
-
-		/*for( int j= 0,s = 0; j < Root->TTransaction[i].PacketNum; j ++)
-		{
-		for( 
-			if(!(Root->TTransaction[i].ItemArray[j].IsVisited))
-			{
-				for( int k = 0; k < Root->TLevel; k ++)
-					if((j == Root->TItem[k].ISeqNum) && !(strcmp(Root->TTransaction[i].ItemArray[j].Pload,Root->TItem[k].Pload)))
-					{
-						s = 1;//if an item has already become a feature item in its father, we then ignore it
-						break;
-					}
-				if(s == 1)
-				{
-					s = 0;
-					continue;
-				}
-				calculate_support(Root->TTransaction[i].ItemArray + j,Root);
-			}
-		}*/
 
 	for( int i = 0; i < Root->TTransactionNum; i ++)
 		for( int j = 0; j < PACKETNUMSIZE; j ++)
@@ -522,10 +500,30 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 	Created1->NextTnode = Created2;
 	//copy the object
 	Created1->TItem = (Item *)malloc((Root->TLevel + 1)*sizeof(Item));
+	int sign = 0;
 	for( int i = 0; i < Root->TLevel; i ++)
-		copy_item(Created1->TItem + i,Root->TItem + i);
-	copy_item(Created1->TItem + Root->TLevel, MMostItem.MItem);
-	//
+		fprintf(stderr,"visit %d (%d %d)\n", Root->TSerialNum,Root->TItem[i].PacketSeqNum, Root->TItem[i].ByteSeqNum);
+	for(int i = 0; i < Root->TLevel; i ++)
+	{
+		fprintf(stderr,"i: %d  MM(%d %d), Root(%d %d)\n", i,MMostItem.MItem->PacketSeqNum, MMostItem.MItem->ByteSeqNum, Root->TItem[i].PacketSeqNum, Root->TItem[i].ByteSeqNum);
+		if( MMostItem.MItem->PacketSeqNum > Root->TItem[i].PacketSeqNum || (MMostItem.MItem->PacketSeqNum == Root->TItem[i].PacketSeqNum &&  MMostItem.MItem->ByteSeqNum > Root->TItem[i].ByteSeqNum))
+			copy_item(Created1->TItem + i,Root->TItem + i);
+		else if(sign == 0)
+		{
+			sign = 1;
+			copy_item(Created1->TItem + i, MMostItem.MItem);
+			i --;
+			fprintf(stderr," enter sign == 0: Created1->TItem + i: (%d %d)\n", MMostItem.MItem->PacketSeqNum, MMostItem.MItem->ByteSeqNum);
+		}
+		else
+			copy_item(Created1->TItem + i + 1, Root->TItem + i);
+	}
+	if( sign == 0)
+	{
+		//fprintf(stderr,"(%d %d)\n", MMostItem.MItem->PacketSeqNum, MMostItem.MItem->ByteSeqNum);
+		copy_item(Created1->TItem + Root->TLevel, MMostItem.MItem);
+	}
+	fprintf(stderr,"finished\n");
 	Created1->TLevel = Root->TLevel + 1;
 	MTree->TnodeNum ++;
 	Created1->TSerialNum = MTree->TnodeNum;
@@ -541,7 +539,7 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 	Created2->NextTnode = NULL;
 	//
 	Created2->TItem = (Item *)malloc(Root->TLevel * sizeof(Item));
-	for( int i = 0; i < Root->TLevel; i ++)
+	for(int  i = 0; i < Root->TLevel; i ++)
 		copy_item(Created2->TItem + i,Root->TItem + i);
 	//
 	Created2->TLevel = Root->TLevel + 1;
@@ -592,24 +590,6 @@ Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
 					}
 
 					
-	/*for( int i = 0; i < Brother->TTransactionNum; i ++)
-	{
-		for( int j= 0,s = 0; j < Brother->TTransaction[i].ItemNum; j ++)
-		{
-			if(!(Brother->TTransaction[i].ItemArray[j].IsVisited))
-			{
-				for( int k = 0; k < Brother->TLevel - 1; k ++)
-					if( (j == Brother->TItem[k].ISeqNum) && !strcmp(Brother->TTransaction[i].ItemArray[j].Pload,Brother->TItem[k].Pload))
-						s = 1;
-				if(s == 1)
-				{
-					s = 0;
-					continue;
-				}
-				calculate_support(Brother->TTransaction[i].ItemArray + j,Brother);
-			}
-		}
-	}*/
 	for( int i = 0; i < Brother->TTransactionNum; i ++)
 		for( int j = 0; j < PACKETNUMSIZE; j ++)
 			for( int k = 0; k < Brother->TTransaction[i].PacketNum[j]; k ++)
@@ -617,14 +597,6 @@ Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
 				Brother->TTransaction[i].ItemArray[j][k].IsVisited = 0;
 				Brother->TTransaction[i].ItemArray[j][k].VisitedTimes = 0;
 				}
-			/*
-		for( int j = 0; j < Brother->TTransaction[i].ItemNum; j ++)
-		{
-			Brother->TTransaction[i].ItemArray[j].IsVisited = 0;//reset
-			Brother->TTransaction[i].ItemArray[j].VisitedTimes = 0;
-		}*/
-
-	
 
 	Transaction  * BTransaction;
 	BTransaction = (Transaction *)malloc(MMostItem.MaxNum*sizeof(Transaction));
@@ -634,9 +606,22 @@ Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
 	Brother->ChildTnodeArray = 0;
 	Brother->ChildTnodeNum = 0;
 	Brother->NextTnode = Created;
-	for(int i = 0; i < Brother->TLevel - 1; i ++)
-		copy_item(BItem+i,Brother->TItem + i);
-	copy_item(BItem + Brother->TLevel - 1,MMostItem.MItem);
+	int sign = 0;
+	for( int i = 0; i < Brother->TLevel - 1; i ++)
+	{
+		if(MMostItem.MItem->PacketSeqNum > Brother->TItem[i].PacketSeqNum || ( MMostItem.MItem->PacketSeqNum == Brother->TItem[i].PacketSeqNum && MMostItem.MItem->ByteSeqNum > Brother->TItem[i].ByteSeqNum))
+			copy_item(BItem + i, Brother->TItem + i);
+		else if( sign == 0)
+		{
+			sign = 1;
+			copy_item(BItem + i, MMostItem.MItem);
+			i --;
+		}
+		else
+			copy_item(BItem + i + 1, Brother->TItem + i);
+	}
+	if(sign == 0)
+		copy_item(BItem + Brother->TLevel - 1, MMostItem.MItem);
 	Brother->TItem = BItem;
 	
 	//dealing with the newly created nodes
