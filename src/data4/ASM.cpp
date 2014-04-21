@@ -161,14 +161,12 @@ int main(int argc, char * argv[])
 	UsedTransactionNum = m;
 	TransactionArray = (Transaction *)malloc(m*sizeof(Transaction));
 	FILE * fr = fopen(ReadFileName,"r");
-	fprintf(stderr,"begain reading data\n");
 	for( int i = 0; i < m; i ++)
 	{//transfer each line of the data into a Transaction, we regard that there are no more than 20000 letters each line
 		fgets(str,MEMSIZE,fr);
 		make_transaction(TransactionArray,i,str);
 	}
 	fclose(fr);
-	fprintf(stderr,"finish read data\n");
 	//till now, all the data in the file has been read into the memory
 	//initial the structure of the Tree
 	Tree * MTree;
@@ -211,7 +209,6 @@ int main(int argc, char * argv[])
 		//fprintf(fw,"TSerialNum:%d UsedTransactionNum: %d ", TmpTnode->TSerialNum,  UsedTransactionNum);
 	//if(TmpTnode->TSerialNum > 30)
 	//	fprintf(fw,"Father %d ", TmpTnode->FatherTnode->TSerialNum);
-	//	fprintf(stderr,"A\n");
 		make_split(MTree,TmpTnode);// all the push are done inside make_split
 	//fprintf(fw,"AUsedTNum: %d children;: %d\n",UsedTransactionNum,TmpTnode->ChildTnodeNum);
 	//	fprintf(stderr,"%d\n",UsedTransactionNum);
@@ -501,11 +498,8 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 	//copy the object
 	Created1->TItem = (Item *)malloc((Root->TLevel + 1)*sizeof(Item));
 	int sign = 0;
-	for( int i = 0; i < Root->TLevel; i ++)
-		fprintf(stderr,"visit %d (%d %d)\n", Root->TSerialNum,Root->TItem[i].PacketSeqNum, Root->TItem[i].ByteSeqNum);
 	for(int i = 0; i < Root->TLevel; i ++)
 	{
-		fprintf(stderr,"i: %d  MM(%d %d), Root(%d %d)\n", i,MMostItem.MItem->PacketSeqNum, MMostItem.MItem->ByteSeqNum, Root->TItem[i].PacketSeqNum, Root->TItem[i].ByteSeqNum);
 		if( MMostItem.MItem->PacketSeqNum > Root->TItem[i].PacketSeqNum || (MMostItem.MItem->PacketSeqNum == Root->TItem[i].PacketSeqNum &&  MMostItem.MItem->ByteSeqNum > Root->TItem[i].ByteSeqNum))
 			copy_item(Created1->TItem + i,Root->TItem + i);
 		else if(sign == 0)
@@ -513,17 +507,14 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 			sign = 1;
 			copy_item(Created1->TItem + i, MMostItem.MItem);
 			i --;
-			fprintf(stderr," enter sign == 0: Created1->TItem + i: (%d %d)\n", MMostItem.MItem->PacketSeqNum, MMostItem.MItem->ByteSeqNum);
 		}
 		else
 			copy_item(Created1->TItem + i + 1, Root->TItem + i);
 	}
 	if( sign == 0)
 	{
-		//fprintf(stderr,"(%d %d)\n", MMostItem.MItem->PacketSeqNum, MMostItem.MItem->ByteSeqNum);
 		copy_item(Created1->TItem + Root->TLevel, MMostItem.MItem);
 	}
-	fprintf(stderr,"finished\n");
 	Created1->TLevel = Root->TLevel + 1;
 	MTree->TnodeNum ++;
 	Created1->TSerialNum = MTree->TnodeNum;

@@ -1,0 +1,14 @@
+Numof-Tran:   23	
+(@0 0)A7 § (@0 2)02  
+Numof-Tran:    6	
+(@0 0)A8 ¨ (@0 2)02  
+Numof-Tran:   16	
+(@0 0)A8 ¨ (@0 2)02  
+
+
+91.8367% of all the Transactions are covered by this feature
+Parameter: 
+	FThreshold: 0.10;
+ 	WThreshold: 0.10;
+ 	DiscardThreshold: 0.30;
+ 	CoverThreshold: 0.80;
