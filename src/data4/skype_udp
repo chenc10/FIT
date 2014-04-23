@@ -10,5 +10,5 @@ Numof-Tran:   16
 Parameter: 
 	FThreshold: 0.10;
  	WThreshold: 0.10;
- 	DiscardThreshold: 0.30;
+ 	DiscardThreshold: 0.50;
  	CoverThreshold: 0.80;
