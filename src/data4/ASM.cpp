@@ -24,7 +24,7 @@ float DiscardThreshold = 0.1; // The number of transactions discarded when a sam
 float CoverThreshold = 0.7;
 int MEMSIZE = 10000;
 int PACKETNUMSIZE = 5;
-
+int method = 1; // method can deside the feature items inside tnode are in order(==1) or not
 typedef struct item
 {
 	//int TransactionSeqNum;
@@ -211,14 +211,10 @@ int main(int argc, char * argv[])
 	//	fprintf(fw,"Father %d ", TmpTnode->FatherTnode->TSerialNum);
 		make_split(MTree,TmpTnode);// all the push are done inside make_split
 	//fprintf(fw,"AUsedTNum: %d children;: %d\n",UsedTransactionNum,TmpTnode->ChildTnodeNum);
-	//	fprintf(stderr,"%d\n",UsedTransactionNum);
-	//	fprintf(stderr,"%d\n",MTree->Root->TTransactionNum);
-	//	fprintf(stderr,"%f\n",CoverThreshold);
 	//	 if(MQueue->QnodeNum == 0)
 	//		fprintf(fw,"reach end\n");
 		if((float)UsedTransactionNum / MTree->Root->TTransactionNum < CoverThreshold)
 		{
-	//	fprintf(stderr,"B\n");
 			while(MQueue->QnodeNum)
 			{
 				TmpTnode = de_queue();
@@ -386,6 +382,7 @@ void make_split(Tree* MTree, Tnode * Root)
 		en_queue(Root->ChildTnodeArray[0]);
 		return;
 	}
+	
 	Tnode * CreatedTnode3;
 	
 	CreatedTnode3 = step_split_samelevel(MTree,CreatedTnode2);
@@ -419,7 +416,7 @@ void make_split(Tree* MTree, Tnode * Root)
 		CreatedTnode2 = CreatedTnode3;
 		CreatedTnode3 = step_split_samelevel(MTree,CreatedTnode2);
 	}
-	
+
 	Tnode ** ChildTnodeArray;
 	ChildTnodeArray = (Tnode **)malloc(Root->ChildTnodeNum *sizeof(Tnode *));
 	Tnode * FirstChild;
@@ -497,6 +494,9 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 	Created1->NextTnode = Created2;
 	//copy the object
 	Created1->TItem = (Item *)malloc((Root->TLevel + 1)*sizeof(Item));
+
+	if(method == 1)
+	{
 	int sign = 0;
 	for(int i = 0; i < Root->TLevel; i ++)
 	{
@@ -514,6 +514,14 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 	if( sign == 0)
 	{
 		copy_item(Created1->TItem + Root->TLevel, MMostItem.MItem);
+	}
+	}
+
+	else
+	{
+	for( int i = 0; i < Root->TLevel; i ++)
+		copy_item(Created1->TItem + i, Root->TItem + i);
+	copy_item(Created1->TItem + Root->TLevel, MMostItem.MItem);
 	}
 	Created1->TLevel = Root->TLevel + 1;
 	MTree->TnodeNum ++;
@@ -558,7 +566,7 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 }
 
 Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
-{//spliting of the same level 
+{//spliting of the same level
 	Tnode * Created;
 	MMostItem.MaxNum = 0;
 	MMostItem.MItem = NULL;
@@ -597,7 +605,16 @@ Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
 	Brother->ChildTnodeArray = 0;
 	Brother->ChildTnodeNum = 0;
 	Brother->NextTnode = Created;
+	if(method == 1)
+	{
 	int sign = 0;
+//cc
+	/*for( int i = 0; i < Brother->TLevel-1; i ++)
+	{
+	fprintf(stderr,"Brother %d:(@%d %d) %s %c 	", i,Brother->TItem[i].PacketSeqNum, Brother->TItem[i].ByteSeqNum,Brother->TItem[i].Pload,hex_asc(Brother->TItem[i].Pload));
+	}
+	
+	fprintf(stderr,"\nMMostItem: (@%d %d) %s %c \n", MMostItem.MItem->PacketSeqNum, MMostItem.MItem->ByteSeqNum,MMostItem.MItem->Pload,hex_asc(MMostItem.MItem->Pload));*/
 	for( int i = 0; i < Brother->TLevel - 1; i ++)
 	{
 		if(MMostItem.MItem->PacketSeqNum > Brother->TItem[i].PacketSeqNum || ( MMostItem.MItem->PacketSeqNum == Brother->TItem[i].PacketSeqNum && MMostItem.MItem->ByteSeqNum > Brother->TItem[i].ByteSeqNum))
@@ -613,7 +630,16 @@ Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
 	}
 	if(sign == 0)
 		copy_item(BItem + Brother->TLevel - 1, MMostItem.MItem);
-	Brother->TItem = BItem;
+	
+	}
+	
+	else
+	{
+	for( int i = 0; i < Brother->TLevel - 1; i ++)
+		copy_item(BItem + i, Brother->TItem + i);
+	copy_item(BItem + Brother->TLevel - 1, MMostItem.MItem);
+	}
+
 	
 	//dealing with the newly created nodes
 	Item * CItem;
@@ -633,6 +659,7 @@ Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
 	MTree->TnodeNum ++;
 	Created->TSerialNum = MTree->TnodeNum;//we need to record the sequential number of a newly createdly node
 
+	Brother->TItem = BItem;
 	Brother->FatherTnode->ChildTnodeNum ++;
 
 	for( int i = 0,j = 0,k = 0; i < Brother->TTransactionNum; i ++)
