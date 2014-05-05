@@ -407,7 +407,7 @@ void make_split(Tree* MTree, Tnode * Root)
 			break;
 		}
 		else if(((float)CreatedTnode3->TTransactionNum) / CreatedTnode2->FatherTnode->TTransactionNum < FThreshold || ((float)CreatedTnode3->TTransactionNum) / MTree->Root->TTransactionNum < WThreshold)
-		{
+		{ // if the rest part after same_level_split is too small, we stop same-level spliting
 			MTree->TnodeNum -= 1;
 			CreatedTnode2->NextTnode = NULL;
 			UsedTransactionNum -= CreatedTnode3->TTransactionNum;
@@ -416,7 +416,6 @@ void make_split(Tree* MTree, Tnode * Root)
 		CreatedTnode2 = CreatedTnode3;
 		CreatedTnode3 = step_split_samelevel(MTree,CreatedTnode2);
 	}
-
 	Tnode ** ChildTnodeArray;
 	ChildTnodeArray = (Tnode **)malloc(Root->ChildTnodeNum *sizeof(Tnode *));
 	Tnode * FirstChild;

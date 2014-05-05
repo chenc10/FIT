@@ -10,5 +10,5 @@
 Parameter: 
 	FThreshold: 0.10;
  	WThreshold: 0.10;
- 	DiscardThreshold: 0.50;
- 	CoverThreshold: 0.80;
+ 	DiscardThreshold: 0.40;
+ 	CoverThreshold: 0.70;
