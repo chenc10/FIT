@@ -1,5 +1,0 @@
-// function: can work right (to some extent) when using 3_18QQ.pcap
-/* problem:
-	1 the number of TCP and UDP flow printed is not the same as the statistic part
-	2 when refer to 2_26.pcap, it got stucki
-*/

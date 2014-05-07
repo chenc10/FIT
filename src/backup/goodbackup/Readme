@@ -1,4 +1,0 @@
-/* 
-	the file in this folder is integrated in dealing with pcap file. April 10 updated.
-*/
-// Apr. 12 I find the program dumped when meeting a packet in wrong order in http files
