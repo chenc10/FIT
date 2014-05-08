@@ -1,4 +1,4 @@
-*.c
+*.o
 *.pcap
 nids_*
 result
