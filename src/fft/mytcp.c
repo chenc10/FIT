@@ -362,117 +362,111 @@ int TPTD_TCP_COPY_BUFFER(TPTD_Token *token,int client)
 	this function can only be cited inside TCP_Process and Find
 */
 	fprintf(stderr,"enter TPTD_TCP_COPY_BUFFER\n");
-		fprintf(stderr," %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
-    unsigned char *data = token->data;
-    struct ip *this_iphdr = (struct ip *)data;
-    struct tcphdr *this_tcphdr = (struct tcphdr *)(data + 4 * this_iphdr->ip_hl);
-    int datalen, iplen;
-    unsigned char *puredata;
-    iplen = ntohs(this_iphdr->ip_len);
-    datalen = iplen - 4 * this_iphdr->ip_hl - 4 * this_tcphdr->th_off;
-    if(datalen<0)
+	//fprintf(stderr," %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+    	unsigned char *data = token->data;
+    	struct ip *this_iphdr = (struct ip *)data;
+    	struct tcphdr *this_tcphdr = (struct tcphdr *)(data + 4 * this_iphdr->ip_hl);
+    	int datalen, iplen;
+    	unsigned char *puredata;
+    	iplen = ntohs(this_iphdr->ip_len);
+    	datalen = iplen - 4 * this_iphdr->ip_hl - 4 * this_tcphdr->th_off;
+    	if(datalen<0)
         return 0;
-    TPTD_TCP_Data_Store *newpacket;
-    TPTD_TCP_Data_Store **packet;
-		fprintf(stderr," before enter %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+    	TPTD_TCP_Data_Store *newpacket;
+    	TPTD_TCP_Data_Store **packet;
+	//fprintf(stderr," before enter %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
 
-    if(client)
-    {
-        if(/*token->tcpptr->client.count < MINI_PACKETS_NUMBER&&*/
-            ((token->tcpptr->client.state == TPTD_TCP_ESTABLISHED)||
-             (token->tcpptr->client.state == TPTD_TCP_CLIENT_DATA)))
-        {
-            /*token->tcpptr->client.payloadlen[token->tcpptr->client.count] = datalen;
-            token->tcpptr->client.captime[token->tcpptr->client.count] = token->captime.tv_usec+token->captime.tv_sec*1000000;
-            token->tcpptr->client.count++;*/
-            newpacket = (TPTD_TCP_Data_Store *)malloc(sizeof(TPTD_TCP_Data_Store));
-            if(newpacket == NULL)
-            {
-                TPTD_Err_No_Mem("TPTD_FFT_TCP_Add_New_PACKET");
-                exit(1);
-            }
-            memset(newpacket, 0, sizeof(TPTD_TCP_Data_Store));
+    	if(client)
+    	{
+        	if(/*token->tcpptr->client.count < MINI_PACKETS_NUMBER&&*/
+            		((token->tcpptr->client.state == TPTD_TCP_ESTABLISHED)||
+             		(token->tcpptr->client.state == TPTD_TCP_CLIENT_DATA)))
+        	{
+            	/*token->tcpptr->client.payloadlen[token->tcpptr->client.count] = datalen;
+            	token->tcpptr->client.captime[token->tcpptr->client.count] = token->captime.tv_usec+token->captime.tv_sec*1000000;
+            	token->tcpptr->client.count++;*/
+            	newpacket = (TPTD_TCP_Data_Store *)malloc(sizeof(TPTD_TCP_Data_Store));
+            	if(newpacket == NULL)
+            	{
+                	TPTD_Err_No_Mem("TPTD_FFT_TCP_Add_New_PACKET");
+                	exit(1);
+            	}
+            	memset(newpacket, 0, sizeof(TPTD_TCP_Data_Store));
 
-            newpacket->payloadlen = datalen;
-            //newpacket->captime = token->captime.tv_usec+token->captime.tv_sec*1000000;
-            newpacket->payload = (char *)malloc(datalen+1);
-            memset(newpacket->payload, 0, sizeof(datalen+1));
-            puredata=data + 4 * this_iphdr->ip_hl + 4 * this_tcphdr->th_off;
-            memcpy(newpacket->payload,puredata,datalen);
+            	newpacket->payloadlen = datalen;
+           	//newpacket->captime = token->captime.tv_usec+token->captime.tv_sec*1000000;
+            	newpacket->payload = (char *)malloc(datalen+1);
+            	memset(newpacket->payload, 0, sizeof(datalen+1));
+            	puredata=data + 4 * this_iphdr->ip_hl + 4 * this_tcphdr->th_off;
+            	memcpy(newpacket->payload,puredata,datalen);
 		/*if(token->tcpptr->client.sPacket == NULL)
             
 		{
-                token->tcpptr->client.sPacket = newpacket;
-            }
-            else
-            {
-                newpacket->next = ftoken->tcpptr->client.sPacket;
-                token->tcpptr->client.sPacket = newpacket;
-            }
-            token->tcpptr=token->tcplockptr->flow;*/
-            packet = &(token->tcpptr->client.sPacket);
-            while((*packet) != NULL)
-            {
-		fprintf(stderr,"3M: client\n");
-                (packet)  = &((*packet)->next);
-            }
+                	token->tcpptr->client.sPacket = newpacket;
+           	}
+            	else
+            	{
+             	   newpacket->next = ftoken->tcpptr->client.sPacket;
+            	    token->tcpptr->client.sPacket = newpacket;
+            	}
+           	token->tcpptr=token->tcplockptr->flow;*/
+           	packet = &(token->tcpptr->client.sPacket);
+           	while((*packet) != NULL)
+            	{
+			//fprintf(stderr,"3M: client\n");
+            		(packet)  = &((*packet)->next);
+            	}
 		//add by cc: ?? It's strange here about the order of "newpacket->next = NULL" and "(*packet) = newpacket", the executing result is quite different  
 		//newpacket->next = NULL;
-            (*packet) = newpacket;
-	    newpacket->next = NULL;
-            token->tcpptr->client.count++;
+            	(*packet) = newpacket;
+	    	newpacket->next = NULL;
+            	token->tcpptr->client.count++;
         }
 
-    }
+    	}
 	else
-    {
-		fprintf(stderr," now enter%d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
-	fprintf(stderr,"1A\n");
-            newpacket = (TPTD_TCP_Data_Store *)malloc(sizeof(TPTD_TCP_Data_Store));
-        if(/*(token->tcpptr->server.count < MINI_PACKETS_NUMBER)&&*/
-            ((token->tcpptr->client.state == TPTD_TCP_ESTABLISHED)||
-             (token->tcpptr->server.state == TPTD_TCP_SYN_RECV)||
-             (token->tcpptr->server.state == TPTD_TCP_SERVER_DATA)))
-        {
-		fprintf(stderr," enter if A%d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
-            /* token->tcpptr->server.payloadlen[token->tcpptr->server.count] = datalen;
-             token->tcpptr->server.captime[token->tcpptr->server.count] = token->captime.tv_usec+token->captime.tv_sec*1000000;
-             token->tcpptr->server.count++;*/
-            //newpacket = (TPTD_TCP_Data_Store *)malloc(sizeof(TPTD_TCP_Data_Store));
-		fprintf(stderr," enter if B%d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
-	fprintf(stderr,"1B\n");
-		fprintf(stderr," %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
-            if(newpacket == NULL)
-            {
-                TPTD_Err_No_Mem("TPTD_FFT_TCP_Add_New_PACKET");
-                exit(1);
-            }
-            memset(newpacket, 0, sizeof(TPTD_TCP_Data_Store));
+   	{
+		//fprintf(stderr," now enter%d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+		//fprintf(stderr,"1A\n");
+        	newpacket = (TPTD_TCP_Data_Store *)malloc(sizeof(TPTD_TCP_Data_Store));
+        	if(
+            		((token->tcpptr->client.state == TPTD_TCP_ESTABLISHED)||
+             		(token->tcpptr->server.state == TPTD_TCP_SYN_RECV)||
+             		(token->tcpptr->server.state == TPTD_TCP_SERVER_DATA)))
+        	{
+		//fprintf(stderr," enter if A%d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+            	/* token->tcpptr->server.payloadlen[token->tcpptr->server.count] = datalen;
+             	token->tcpptr->server.captime[token->tcpptr->server.count] = token->captime.tv_usec+token->captime.tv_sec*1000000;
+             	token->tcpptr->server.count++;*/
+            	//newpacket = (TPTD_TCP_Data_Store *)malloc(sizeof(TPTD_TCP_Data_Store));
+		//fprintf(stderr," enter if B%d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+		//fprintf(stderr,"1B\n");
+		//fprintf(stderr," %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+            	if(newpacket == NULL)
+            	{
+             	   TPTD_Err_No_Mem("TPTD_FFT_TCP_Add_New_PACKET");
+            	    exit(1);
+            	}
+            	memset(newpacket, 0, sizeof(TPTD_TCP_Data_Store));
 
-            newpacket->payloadlen = datalen;
-            //newpacket->captime = token->captime.tv_usec+token->captime.tv_sec*1000000;
+            	newpacket->payloadlen = datalen;
+            	//newpacket->captime = token->captime.tv_usec+token->captime.tv_sec*1000000;
 
-            newpacket->payload = (char *)malloc(datalen+1);
-            memset(newpacket->payload, 0, sizeof(datalen+1));
-            puredata=data + 4 * this_iphdr->ip_hl + 4 * this_tcphdr->th_off;
-            memcpy(newpacket->payload,puredata,datalen);
-		fprintf(stderr,"2M %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
-
-
-	fprintf(stderr,"1C\n");
-	    packet = &(token->tcpptr->server.sPacket);
-	fprintf(stderr,"1D\n");
-            while((*packet) != NULL)
-            {
-		fprintf(stderr,"1M %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
-                (packet)  = &((*packet)->next);
-            }
-	fprintf(stderr,"1E\n");
+            	newpacket->payload = (char *)malloc(datalen+1);
+            	memset(newpacket->payload, 0, sizeof(datalen+1));
+            	puredata=data + 4 * this_iphdr->ip_hl + 4 * this_tcphdr->th_off;
+            	memcpy(newpacket->payload,puredata,datalen);
+	    //fprintf(stderr,"2M %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+	    	packet = &(token->tcpptr->server.sPacket);
+            	while((*packet) != NULL)
+           	 {
+		//fprintf(stderr,"1M %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+                	(packet)  = &((*packet)->next);
+            	}
 		newpacket->next = NULL;
-            (*packet) = newpacket;
+            	(*packet) = newpacket;
 		(*packet)->next = NULL;
-		newpacket->next = NULL;
-            token->tcpptr->server.count++;
+            	token->tcpptr->server.count++;
         }
 
     }

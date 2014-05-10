@@ -24,6 +24,10 @@
 
 #define TIME_TICK	1000000
 
+//add by cc
+#define OUTPUT_FLOW_SIZE 20
+#define OUTPUT_PACKET_SIZE 100
+
 TPTD_FFT_UDP_Flow_Table *tptd_fft_udp_table;
 int tptd_fft_udp_table_size;
 
@@ -93,7 +97,9 @@ int TPTD_UDP_COPY_BUFFER(TPTD_Token * token, int client)
 	TPTD_UDP_Data_Store ** packet;
 	if(client)
 	{
-		fprintf(stderr,"copy: A\n");
+		token->udpptr->client_count ++;
+		if(token->udpptr->client_count > OUTPUT_FLOW_SIZE)
+			return;
 		newpacket = (TPTD_UDP_Data_Store*)malloc(sizeof(TPTD_UDP_Data_Store));
 		if(newpacket == NULL)
 		{
@@ -102,28 +108,25 @@ int TPTD_UDP_COPY_BUFFER(TPTD_Token * token, int client)
 		}
 		memset(newpacket,0,sizeof(TPTD_UDP_Data_Store));
 		newpacket->payloadlen = datalen;
-		fprintf(stderr,"copy: B\n");
-	
 		newpacket->payload = (char *)malloc(datalen + 1);
 		memset(newpacket->payload, 0, sizeof(datalen+1));
 		puredata = data + 4*this_iphdr->ip_hl + 8;
 		memcpy(newpacket->payload, puredata, datalen);
-		fprintf(stderr,"copy: C\n");
-		fprintf(stderr,"UDP num of client packets: %d\n", token->udpptr->client_count);	
 		packet = &(token->udpptr->client);
-		fprintf(stderr,"copy: C+\n");
-		fprintf(stderr,"%d yes\n",token->udpptr->client == NULL);
+		//fprintf(stderr,"copy: C+\n");
+		//fprintf(stderr,"client_count: %d \n", token->udpptr->client_count);
+		//fprintf(stderr,"%d yes\n",token->udpptr->client == NULL);
 		while((*packet)!= NULL)
 		{
-			fprintf(stderr,"5E: udp client\n");
+		//	fprintf(stderr,"5E: udp client\n");
 			packet = &((*packet)->next);
-			fprintf(stderr,"%d\n",((*packet)==NULL));
+		//	fprintf(stderr,"%d\n",((*packet)==NULL));
 		}
-		fprintf(stderr,"copy: D\n");
+		//fprintf(stderr,"copy: D\n");
 		(*packet) = newpacket;
 		(*packet)->next = NULL;
-		token->udpptr->client_count ++;
-		if(token->udpptr->client_count == 5)
+		//token->udpptr->client_count ++;
+		if(token->udpptr->client_count == OUTPUT_FLOW_SIZE)
 		{
 			fprintf(stderr,"count enough PRINTFLOW\n");
 			TPTD_UDP_PRINTFLOW(token->udpptr, 1);
@@ -133,9 +136,9 @@ int TPTD_UDP_COPY_BUFFER(TPTD_Token * token, int client)
 
 	else
         {
-	//add by cc
-	// in fact this part would never be visited
-		fprintf(stdout,"udp copy direction error\n");
+		token->udpptr->server_count ++;
+		if(token->udpptr->server_count > OUTPUT_FLOW_SIZE)
+			return;
                 newpacket = (TPTD_UDP_Data_Store*)malloc(sizeof(TPTD_UDP_Data_Store));
                 if(newpacket == NULL)
                 {
@@ -144,23 +147,22 @@ int TPTD_UDP_COPY_BUFFER(TPTD_Token * token, int client)
                 }
                 memset(newpacket,0,sizeof(TPTD_UDP_Data_Store));
 		newpacket->payloadlen = datalen;
-
                 newpacket->payload = (char *)malloc(datalen + 1);
+
                 memset(newpacket->payload, 0, sizeof(datalen+1));
                 puredata = data + 4*this_iphdr->ip_hl + 8;
+
                 memcpy(newpacket->payload, puredata, datalen);
-		TPTD_FFT_UDP_Flow * myflow;
-		myflow = token->udpptr;
-                *packet = token->udpptr->server;
 		packet = &(token->udpptr->server);
+		
 		while((*packet)!= NULL)
                 {   
                         packet = &((*packet)->next);
                 }   
                 (*packet) = newpacket;
 		(*packet)->next = NULL;
-                token->udpptr->server_count ++; 
-		if(token->udpptr->server_count == 5)
+                //token->udpptr->server_count ++; 
+		if(token->udpptr->server_count == OUTPUT_FLOW_SIZE)
 		{
 			TPTD_UDP_PRINTFLOW(token->udpptr, 0);
 			token->udpptr->already_printed = 1;
@@ -182,9 +184,9 @@ void TPTD_UDP_PRINTFLOW( TPTD_FFT_UDP_Flow * flow, int from_client)
 		fp_client = fopen("nids_cTos_udp", "a+");
 		if(!fp_client)
 			exit(12);
-		for(packet = flow->client,clientpacketnum = 0;packet && clientpacketnum < flow->client_count && clientpacketnum < 5;packet = packet->next, clientpacketnum ++)
+		for(packet = flow->client,clientpacketnum = 0;packet && clientpacketnum < flow->client_count; packet = packet->next, clientpacketnum ++)
 		{
-			for(payloadnum = 0; payloadnum < packet->payloadlen && payloadnum < 100; payloadnum ++)
+			for(payloadnum = 0; payloadnum < packet->payloadlen && payloadnum < OUTPUT_PACKET_SIZE; payloadnum ++)
 			{
 				fprintf(fp_client, "%02X", clientpacketnum);
 				fprintf(fp_client, "%03X", payloadnum);
@@ -203,9 +205,9 @@ void TPTD_UDP_PRINTFLOW( TPTD_FFT_UDP_Flow * flow, int from_client)
 		fp_server = fopen("nids_sToc_udp", "a+");
 		if(!fp_server)
 			exit(12);
-		for( packet = flow->server, serverpacketnum = 0; packet && serverpacketnum < flow->server_count && clientpacketnum < 5; packet = packet->next, serverpacketnum ++)
+		for( packet = flow->server, serverpacketnum = 0; packet && serverpacketnum < flow->server_count; packet = packet->next, serverpacketnum ++)
 		{
-			for(payloadnum = 0; payloadnum < packet->payloadlen && payloadnum < 100; payloadnum ++)
+			for(payloadnum = 0; payloadnum < packet->payloadlen && payloadnum < OUTPUT_PACKET_SIZE; payloadnum ++)
 			{
 				fprintf(fp_server, "%02X", serverpacketnum);
 				fprintf(fp_server, "%03X", payloadnum);
@@ -266,7 +268,7 @@ FFT_UDP_RELEASE:
 			fprintf(stderr,"UDP_Find ufptr match\n");
 			token->udplockptr = lockptr;
 			token->udpptr = ufptr;
-			//add by yzl
+			//add by cc
 			TPTD_UDP_COPY_BUFFER(token,1);
 			g_static_rw_lock_writer_unlock(&rlockptr->rwlock);
 			token->lock_state = TOKEN_LOCK_STATE_WRITE;
@@ -286,10 +288,9 @@ FFT_UDP_RELEASE:
 			fprintf(stderr,"UDP_Find rufptr match\n");
 			token->udplockptr = rlockptr;
 			token->udpptr = rufptr;
-			//add by yzl
-			token->udpptr->server_count++;
+			//add by cc
 			token->lock_state = TOKEN_LOCK_STATE_WRITE;
-			//TPTD_UDP_COPY_BUFFER(token,0);
+			TPTD_UDP_COPY_BUFFER(token,0);
 			g_static_rw_lock_writer_unlock(&lockptr->rwlock);
 			*is_reverse = 1;
 			if(token->udpptr->del_flag == TPTD_READY_DEL)
@@ -440,11 +441,13 @@ static int TPTD_FFT_UDP_Create(TPTD_Token *token, struct ip *this_iphdr){
 		fuptr->flow = newflow;
 	}
 	token->udpptr=token->udplockptr->flow;
+	// we regard that each first udp flow is from client.
 	fuptr->flow->is_client = CREATE_BY_CLIENT;
 	// add by cc
 	//fuptr->flow->client = NULL;
 	//uptr->flow->server = NULL;
-	fuptr->flow->already_printed = 0;
+	if(fuptr->flow->already_printed != 0)
+		fprintf(stderr," error - udp_create_already_printed != 0\n");
 	TPTD_FFT_UDP_Update_Time(token, 1);
 }
 
@@ -493,10 +496,10 @@ void TPTD_FFT_Process_UDP(int it, TPTD_Token *token){
 			}
 
 			else
-			{
+			{//if already exist in flow table
 
 				if(is_reverse)
-				{
+				{// if this is s->c
 					if(token->udpptr->server_count==0)
 					{
 						curtime = 1000000*(token->captime.tv_sec - token->udpptr->first.tv_sec)+
@@ -516,13 +519,13 @@ void TPTD_FFT_Process_UDP(int it, TPTD_Token *token){
                     				TPTD_FFT_UDP_Update_Time(token,0);
                  			}
                  			token->flow_state = TOKEN_FLOW_STATE_FROMSERVER;
-                 			token->udpptr->server_count++;
+					//to avoid redundancy, we only add server_count when copying buffer
 					token->token_state = TOKEN_STATE_GOON;
                  			TPTD_FFT_UNLOCK_UDP_WRITER(token);
                 		}
 				else
-				{
-					fprintf(stderr,"flow:A\n");
+				{// if this is c->s
+					//fprintf(stderr,"flow:A\n");
                 			//token->udpptr->client_count++;
 					token->token_state = TOKEN_STATE_GOON;
 					TPTD_FFT_UNLOCK_UDP_WRITER(token);
@@ -537,7 +540,7 @@ void TPTD_FFT_Process_UDP(int it, TPTD_Token *token){
 	//	fprintf(stderr,"TOKEN_FLOW_STATE_FROMCLIENT\n");
             if(!token->udpptr->del_flag)
             {	
-		fprintf(stderr,"flow: B\n");
+		//fprintf(stderr,"flow: B\n");
                 if(token->udplockptr && token->udpptr ){
                     if(token->lock_state == TOKEN_LOCK_STATE_FREE){
                         g_static_rw_lock_writer_lock(&token->udplockptr->rwlock);
@@ -559,6 +562,7 @@ void TPTD_FFT_Process_UDP(int it, TPTD_Token *token){
                  TPTD_FFT_UNLOCK_UDP_WRITER(token);
             }
             break;
+
         case TOKEN_FLOW_STATE_FROMSERVER:
 	//	fprintf(stderr,"TOKEN_FLOW_STATE_FROMSERVER\n");
             if(!token->udpptr->del_flag)
@@ -569,8 +573,7 @@ void TPTD_FFT_Process_UDP(int it, TPTD_Token *token){
                         g_static_rw_lock_writer_lock(&token->udplockptr->rwlock);
                         token->lock_state = TOKEN_LOCK_STATE_WRITE;
 			// in fact currently it is not visited
-			//TPTD_UDP_COPY_BUFFER(token,0);
-                        token->udpptr->server_count++;
+			TPTD_UDP_COPY_BUFFER(token,0);
                         TPTD_FFT_UDP_Update_Time(token, 0);
                         token->token_state = TOKEN_STATE_GOON;
                         TPTD_FFT_UNLOCK_UDP_WRITER(token);
