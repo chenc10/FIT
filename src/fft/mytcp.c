@@ -329,6 +329,7 @@ static void TPTD_FFT_TCP_Add_New_Flow(TPTD_Token *token, struct tcphdr *this_tcp
  ****************************************************************************/
 
 static void TPTD_FFT_TCP_Del_Flow(TPTD_Token *token,int from_client){
+	fprintf(stderr," enter Del_FLow\n");
 	TPTD_FFT_TCP_Flow *flowptr = token->tcpptr;
 	TPTD_FFT_TCP_Flow_Table *lockptr;
 	TPTD_FFT_TCP_Flow *tmp;
@@ -413,14 +414,20 @@ int TPTD_TCP_COPY_BUFFER(TPTD_Token *token,int client)
            	packet = &(token->tcpptr->client.sPacket);
            	while((*packet) != NULL)
             	{
-			//fprintf(stderr,"3M: client\n");
+			fprintf(stderr,"3M: client1\n");
+			fprintf(stderr,"ww\n");
+			if((*packet)->next == NULL)
+				fprintf(stderr,"(*packet)->next == NULL\n");
+			fprintf(stderr,"ww0\n");
             		(packet)  = &((*packet)->next);
+			fprintf(stderr,"ww1\n");
             	}
 		//add by cc: ?? It's strange here about the order of "newpacket->next = NULL" and "(*packet) = newpacket", the executing result is quite different  
 		//newpacket->next = NULL;
             	(*packet) = newpacket;
 	    	newpacket->next = NULL;
             	token->tcpptr->client.count++;
+		fprintf(stderr,"finish client copy buffer\n");
         }
 
     	}
@@ -460,7 +467,7 @@ int TPTD_TCP_COPY_BUFFER(TPTD_Token *token,int client)
 	    	packet = &(token->tcpptr->server.sPacket);
             	while((*packet) != NULL)
            	 {
-		//fprintf(stderr,"1M %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+		fprintf(stderr,"1M %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
                 	(packet)  = &((*packet)->next);
             	}
 		newpacket->next = NULL;
@@ -801,7 +808,9 @@ AGAIN:
 			if(a_tcp->client.state == TPTD_TCP_ESTABLISHED ||
 				a_tcp->client.state == TPTD_TCP_CLIENT_DATA){
 				//TPTD_Warning_General("Client sent a abnormal SYN packet\n");
-				TPTD_FFT_TCP_Del_Flow(token,from_client);
+				fprintf(stderr,"from client and A abnormal SYN come\n");
+				//errors for fromserver may happen
+				//TPTD_FFT_TCP_Del_Flow(token,from_client);
 				token->token_state = TOKEN_STATE_END;
 				TPTD_FFT_UNLOCK_TCP_WRITER(token);
 				return ;
@@ -832,7 +841,9 @@ AGAIN:
 		 	 */
 			if(a_tcp->server.state == TPTD_TCP_SYN_RECV){
 				//TPTD_Warning_General("A abnormal SYN packet is sent by server\n");
-				TPTD_FFT_TCP_Del_Flow(token,from_client);
+				fprintf(stderr,"from server and A abnormal SYN packet\n");
+				// errors may occur if flow are delete, by cc
+				//TPTD_FFT_TCP_Del_Flow(token,from_client);
 				token->token_state = TOKEN_STATE_END;
 				TPTD_FFT_UNLOCK_TCP_WRITER(token);
 				return ;
@@ -923,6 +934,7 @@ AGAIN:
 		/*if the server seq and ack_seq match those of client, delete it*/
 		if((a_tcp->server.seq==a_tcp->client.ack_seq) &&
 			(a_tcp->server.ack_seq==a_tcp->client.seq)){
+			fprintf(stderr,"reset come\n");
 			TPTD_FFT_TCP_Del_Flow(token,from_client);
 		}
 		else{
@@ -987,6 +999,7 @@ AGAIN:
 	 * As a ACK packet without payload appears.
 	 */
 	if ((this_tcphdr->th_flags & TH_ACK) && !datalen) {
+		fprintf(stderr,"no payload packet come\n");
 
 		/*Update the seq and ack_seq first*/
 		if(from_client){
@@ -1008,6 +1021,7 @@ AGAIN:
 			(a_tcp->state == TPTD_FFT_TCP_SERVER_CLOSE && from_client)) &&
 		   ((a_tcp->server.seq==a_tcp->client.ack_seq) &&
 			(a_tcp->server.ack_seq==a_tcp->client.seq))){
+			fprintf(stderr," no payload packet come and checked rst\n");
 			TPTD_FFT_TCP_Del_Flow(token,from_client);
 			token->token_state = TOKEN_STATE_END;
 			TPTD_FFT_UNLOCK_TCP_WRITER(token);
@@ -1089,7 +1103,7 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 	{
 		if(flow->client.count <= MINI_PACKETS_NUMBER || flow->client.count >=  MAX_PACKETS_NUMBER)
 			return;
-		fp_client = fopen("nids_cTos_out","a+");
+		fp_client = fopen("nids_cTos_tcp","a+");
 		if(!fp_client)
 			exit(11);
 		packet = flow->client.sPacket;
@@ -1126,7 +1140,7 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 	{
 		if(flow->server.count <= MINI_PACKETS_NUMBER || flow->server.count >=  MAX_PACKETS_NUMBER)
 			return;	
-		fp_server = fopen("nids_sToc_out","a+");
+		fp_server = fopen("nids_sToc_tcp","a+");
 		if(!fp_server)
 			exit(12);
         	//fprintf(fp_server,"now begin write nids_sToc: %d ",serverpacketnum);

@@ -1,0 +1,12 @@
+Numof-Tran:    2	
+(@0 2)02  (@0 14)7D } (@1 2)02  (@2 2)02  (@3 2)02  (@4 2)02  (@5 2)02  (@6 2)02  (@18 2)4D M 
+Numof-Tran:    2	
+(@0 2)02  (@0 31)FF ÿ (@1 2)02  (@2 2)02  (@3 2)02  (@4 2)02  (@4 3)67 g (@6 2)02  (@6 23)73 s (@7 2)6D m (@10 2)7D } (@14 2)7D } 
+
+
+80.0000% of all the Transactions are covered by this feature
+Parameter: 
+	FThreshold: 0.00;
+ 	WThreshold: 0.39;
+ 	DiscardThreshold: 0.60;
+ 	CoverThreshold: 0.80;

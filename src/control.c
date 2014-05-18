@@ -246,7 +246,7 @@ TPTD_Token* TPTD_Get_Token(int it, struct cap_queue_item *qitem){
 				 * Bingo, the update some variables.
 				 * Including, detect rule chain, caplen, data.
 				 */
-				//fprintf(stderr,"we find right token saddr %d source %d daddr %d dest %d\n",ret_token->addr.saddr,ret_token->addr.source,ret_token->addr.dest,ret_token->addr.daddr);
+				fprintf(stderr,"we find right token saddr %d source %d daddr %d dest %d\n",ret_token->addr.saddr,ret_token->addr.source,ret_token->addr.dest,ret_token->addr.daddr);
 				DEBUG_MESSAGE(DebugMessage("Return a ALIVE TOKEN\n"););
 				//TODO select detect chain, according to the detect flag and flow flag
 				//TODO stycpy(ret_token->suggestname, "xxxx");
