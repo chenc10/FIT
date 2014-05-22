@@ -281,6 +281,7 @@ static void cap_queue_process_thread(int i)
 		if (qitem == &EOF_item) 
 		{
 			fprintf(stderr,"EOF output\n");
+			fprintf(stdout, "finish processing loop pcap\n");
 			break; /* EOF item received: we should exit */
 		}
 		
@@ -344,6 +345,7 @@ static void TPTD_Timeout_Process_thread(){
 	gettimeofday(&top_now,NULL);
 	fprintf(stderr,"\nTimeout_Process_gettimeofday: %ld\n", top_now.tv_sec);
 	sleep(2);
+	fprintf(stdout,"enter timeout\n");
 	gettimeofday(&top_now,NULL);
 	fprintf(stderr,"Timeout_Process_after_sleep: %ld\n",top_now.tv_sec);
 		//while(1){
@@ -589,9 +591,8 @@ struct timeval stoptime;
 	#pragma omp section
 	{	
 		pcap_loop(desc, -1, (pcap_handler) nids_pcap_handler, 0);
-		
-		STOP_CAP_QUEUE_PROCESS_THREAD();
 		fprintf(stderr,"EOF item input!\n");
+		STOP_CAP_QUEUE_PROCESS_THREAD();
 			//cap_queue_process_thread(1);
 	}
 	#pragma omp section
@@ -600,13 +601,14 @@ struct timeval stoptime;
 		{
 			//cap_queue_process_thread(omp_get_thread_num());
 			cap_queue_process_thread(1);
+			TPTD_Timeout_Process_thread();
 		//	cap_queue_process_thread(0);
 		}
 	}
 	#pragma omp section
 	{
 		//fprintf(stderr," haha \n");
-		TPTD_Timeout_Process_thread();
+		//TPTD_Timeout_Process_thread();
 		
 	}
 

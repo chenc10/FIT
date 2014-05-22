@@ -32,6 +32,10 @@
 #include "mytcp.h"
 #include "tptd.h"
 
+//by cc
+#define OUTPUT_FLOWSIZE 20
+#define OUTPUT_PACKETSIZE 100
+
 #define TPTD_FFT_UNLOCK_TCP_WRITER(token) \
 		if(token->lock_state == TOKEN_LOCK_STATE_TWOWRITE){\
 			if(token->tcplockptr != token->rtcplockptr){\
@@ -414,13 +418,8 @@ int TPTD_TCP_COPY_BUFFER(TPTD_Token *token,int client)
            	packet = &(token->tcpptr->client.sPacket);
            	while((*packet) != NULL)
             	{
-			fprintf(stderr,"3M: client1\n");
-			fprintf(stderr,"ww\n");
-			if((*packet)->next == NULL)
-				fprintf(stderr,"(*packet)->next == NULL\n");
-			fprintf(stderr,"ww0\n");
+			//fprintf(stderr,"3M: client1\n");
             		(packet)  = &((*packet)->next);
-			fprintf(stderr,"ww1\n");
             	}
 		//add by cc: ?? It's strange here about the order of "newpacket->next = NULL" and "(*packet) = newpacket", the executing result is quite different  
 		//newpacket->next = NULL;
@@ -467,7 +466,7 @@ int TPTD_TCP_COPY_BUFFER(TPTD_Token *token,int client)
 	    	packet = &(token->tcpptr->server.sPacket);
             	while((*packet) != NULL)
            	 {
-		fprintf(stderr,"1M %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
+		//fprintf(stderr,"1M %d %d %d %d\n", token->tcpptr->addr.source, token->tcpptr->addr.dest, token->tcpptr->addr.saddr, token->tcpptr->addr.daddr);
                 	(packet)  = &((*packet)->next);
             	}
 		newpacket->next = NULL;
@@ -601,9 +600,6 @@ static int TPTD_FFT_TCP_Need_Ressameble(TPTD_Token *token){
  * Returns: void
  *
  ****************************************************************************/
-int count= 0;
-int count1=0;
-
 //FIXME: I think the traffic classifcation system need to identify the protocol using
 //		 only first several packets. The most important of this system is processing performance.
 //		 So the TCP-reassemble of this function is very simple.
@@ -1108,12 +1104,12 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 			exit(11);
 		packet = flow->client.sPacket;
 		clientpacketnum = 0;
-		while(packet && clientpacketnum < 5)
+		while(packet && clientpacketnum < OUTPUT_FLOWSIZE)
 		{
 			//if(packet->payloadlen==0)
 			//	fprintf(fp_client,"%02X!!!!! ",clientpacketnum);
 			payloadnum = 0;
-			while(payloadnum < packet->payloadlen && payloadnum < 100)
+			while(payloadnum < packet->payloadlen && payloadnum < OUTPUT_PACKETSIZE)
 			{
 				fprintf(fp_client,"%02X",clientpacketnum);
 				fprintf(fp_client,"%03X",payloadnum);
@@ -1146,10 +1142,10 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
         	//fprintf(fp_server,"now begin write nids_sToc: %d ",serverpacketnum);
 		packet = flow->server.sPacket;
 		serverpacketnum = 0;
-		while(packet && serverpacketnum < 5)
+		while(packet && serverpacketnum < OUTPUT_FLOWSIZE)
        		 {
 			payloadnum = 0;
-                	while(payloadnum < packet->payloadlen && payloadnum < 100)
+                	while(payloadnum < packet->payloadlen && payloadnum < OUTPUT_PACKETSIZE)
                		{
                        		fprintf(fp_server,"%02X",serverpacketnum);
                         	fprintf(fp_server,"%03X",payloadnum);

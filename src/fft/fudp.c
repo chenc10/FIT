@@ -98,6 +98,7 @@ int TPTD_UDP_COPY_BUFFER(TPTD_Token * token, int client)
 	if(client)
 	{
 		token->udpptr->client_count ++;
+		// we will not copy more packet for a printed udp flow, in order to save mem
 		if(token->udpptr->client_count > OUTPUT_FLOW_SIZE)
 			return;
 		newpacket = (TPTD_UDP_Data_Store*)malloc(sizeof(TPTD_UDP_Data_Store));

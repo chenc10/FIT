@@ -1,0 +1,10 @@
+Numof-Tran: 1273	
+(@0 0)E4 ä (@0 1)01  (@1 0)E4 ä (@1 1)01  
+
+
+72.2452% of all the Transactions are covered by this feature
+Parameter: 
+	FThreshold: 0.00;
+ 	WThreshold: 0.05;
+ 	DiscardThreshold: 0.50;
+ 	CoverThreshold: 0.50;
