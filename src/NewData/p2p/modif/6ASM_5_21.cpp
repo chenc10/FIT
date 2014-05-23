@@ -289,6 +289,10 @@ int hex_asc(char * hex)
 		asc = asc + hex[1] - 55;
 	else
 		asc = asc + hex[1] - 48;
+	if(asc == 10)
+		return 160;
+	if(asc == 0)
+		return ' ';
 	return asc;
 }
 
