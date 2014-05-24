@@ -1,0 +1,18 @@
+Numof-Tran:   14	
+(@0 0)01  (@0 1)01  (@0 7)E1 á 
+Numof-Tran:   14	
+(@0 10)00   (@1 10)00   (@2 10)00   
+	Numof-Tran:   17	
+(@0 0)01  (@0 1)01  (@0 14)01  (@0 38)00   
+	Numof-Tran:   15	
+(@0 0)01  (@0 1)01  (@0 9)8C Œ (@0 37)00   
+	Numof-Tran:  102	
+(@0 0)01  (@0 1)01  (@1 0)01  (@1 1)01  (@2 0)01  
+
+
+78.2609% of all the Transactions are covered by this feature
+Parameter: 
+	FThreshold: 0.00;
+ 	WThreshold: 0.08;
+ 	DiscardThreshold: 0.57;
+ 	CoverThreshold: 0.80;

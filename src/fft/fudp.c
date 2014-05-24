@@ -185,6 +185,7 @@ void TPTD_UDP_PRINTFLOW( TPTD_FFT_UDP_Flow * flow, int from_client)
 		fp_client = fopen("nids_cTos_udp", "a+");
 		if(!fp_client)
 			exit(12);
+		fprintf(fp_client,"%d ",tptd_gparams.apptype);
 		for(packet = flow->client,clientpacketnum = 0;packet && clientpacketnum < flow->client_count; packet = packet->next, clientpacketnum ++)
 		{
 			for(payloadnum = 0; payloadnum < packet->payloadlen && payloadnum < OUTPUT_PACKET_SIZE; payloadnum ++)

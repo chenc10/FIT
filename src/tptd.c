@@ -92,8 +92,11 @@ inline static int TPTD_Get_Process_Thread(){
 }
 
 static void TPTD_Init_Globals(){
+	int tmp;
+	tmp = tptd_gparams.apptype;
 	//TODO init parameter struct and so on.
 	memset(&tptd_gparams, 0, sizeof(TPTD_Global_Params));
+	tptd_gparams.apptype = tmp;
 	tptd_gparams.cores = TPTD_Get_CPUInfo();
 	tptd_gparams.capqueue = TPTD_Cal_CapQueue();
 	tptd_gparams.processthread = TPTD_Get_Process_Thread();
@@ -110,7 +113,7 @@ static void TPTD_Init_Globals(){
 static void TPTD_Parse_CmdLine(int argc, char **argv){
 	//TODO chew up the command line using getopt function
 	int opt;
-	while((opt = getopt(argc,argv,"r:w:")) != EOF)
+	while((opt = getopt(argc,argv,"r:w:n:")) != EOF)
 	{
 		switch(opt)
 		{
@@ -125,6 +128,13 @@ static void TPTD_Parse_CmdLine(int argc, char **argv){
 			nids_prefix_output[strlen(optarg)] = '\0';
 			fprintf(stderr," oname: %s\n",nids_prefix_output);
 			break;
+		case 'n':
+			tptd_gparams.apptype = atoi(optarg);
+			//nids_prefix_output = "\0";
+		//	memcpy(nids_prefix_output,optarg,strlen(optarg));
+		//	nids_prefix_output[strlen(optarg)] = '\0';
+		//	fprintf(stderr," oname: %s\n",nids_prefix_output);
+			
 		}
 	}
 }

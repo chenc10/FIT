@@ -14,6 +14,7 @@
 #define TPTD_TRAFFIC_MODE	1
 
 typedef  struct   _TPTD_Global_Params{
+	int apptype;
 	int cores;
 	int capqueue;
 	int processthread;
