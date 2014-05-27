@@ -58,7 +58,7 @@ int main(int argc, char * argv[])
 		{
 		case 'f':
 			memcpy(FeatureFileName,optarg,strlen(optarg));
-			ReadFileName[strlen(optarg)] = '\0';
+			FeatureFileName[strlen(optarg)] = '\0';
 			break;
 		case 'r':
 			memcpy(ReadFileName,optarg,strlen(optarg));
