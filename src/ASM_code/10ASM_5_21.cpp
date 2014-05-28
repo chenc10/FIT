@@ -1,12 +1,16 @@
-/*feature description:
-	!only handle packet feature.	
+/*feature description:	
 	1.commandline:			OK
 	2.ordered-feature:		OK (+parameters set)
 	3.dynamic threshold:		OK
 	4.special-feature handle	NO
 	5.set StepParaVariation		OK
-	6.different weight for missing and disconsistent OK
-15:12:39 5.7
+	6.different weight for 
+		missing and 
+		disconsistent 		OK
+	7.amplify stepthreshold to 
+		stop growging when 
+		meet CoverThreshold	OK
+10:40 5.28
 */
 
 
@@ -28,26 +32,27 @@
 #include<stdlib.h>
 #include<unistd.h>
 
-#define MEMSIZE 50000
-#define PACKETNUMSIZE 20
 char  ReadFileName[128] = "Dat.dat";
 char  WriteFileName[128] = "Result.result";
-float StepParaVariation = 0.007;
+float StepParaVariation = 0.002;
 float WThreshold = 0.05; 
 	//The first node after spliting covers more than a certain part(WThreshold) of all the transactions in the root node
 float FThreshold = 0;
 float DiscardThreshold = 0.6; 
 	// The number of transactions discarded when a same-level spliting is made must be limited to a certain threshold(DiscardThreshold, otherwise we refuse to make that split
 float CoverThreshold = 0.8;
+int MEMSIZE = 50000;
+int PACKETNUMSIZE = 20;
 int method = 1; 
 	// method can deside the feature items inside tnode are in order(==1) or not
 typedef struct item
 {
 	//int TransactionSeqNum;
 	//int ISeqNum;//IseqNum represents the sequential number of this item in the Transaction it belongs to, and it also means the subcript number
-	int ISeqNum;
+	int PacketSeqNum;//
+	int ByteSeqNum;
 	char	Pload[3];
-	int Support;
+	float Support;
 	bool IsVisited;
 }Item;
 typedef struct MostItem
@@ -55,13 +60,14 @@ typedef struct MostItem
 	Item * MItem;
 		// the PTR to the item that has appeared most frequently (pointed to the position where the item appered for the first time)
 	int MaxNum;
-	int MaxSupport;
+	float MaxSupport;
 		//including the number of Transactions that includes this most frequent item, and this is also  MItem->Support
 }MostItem;
 typedef struct transaction
 {
-	Item * ItemArray;//array of pointers, each pointer refers to a packet
-	int ItemNum;
+	Item ** ItemArray;//array of pointers, each pointer refers to a packet
+	//int ItemNum;
+	int * PacketNum;//Currently we assign the number of packets in a flow as 20.
 }Transaction;
 typedef struct tnode
 {//the node in the tree of the level-spliting algorithm
@@ -103,9 +109,9 @@ typedef struct queue
 	Qnode * EndQnode;
 }Queue;
 
-void get_size(int & m, int & );//get the size of the data matrix , the number of Tansactions and the number of items inside each Transaction
-int make_transaction(Transaction * T, int TransactionSeqNum, char * str);
-void make_item(Item *,int , char *);
+void get_size(int & m);//get the size of the data matrix , the number of Tansactions and the number of items inside each Transaction
+void make_transaction(Transaction * T, int TransactionSeqNum, char * str);
+void make_item(Item *,int ,int , char *);
 void copy_item(Item *, Item *);
 void calculate_support(Item *);//calcalate the support of a certain item
 void make_split(Tree * , Tnode *);
@@ -155,6 +161,20 @@ int main(int argc, char * argv[])
 			break;
 		}
 	}
+	/*if(argc == 2)
+		WThreshold = atof(argv[1]);
+	if(argc == 3)
+	{
+		WThreshold = atof(argv[1]);
+		FThreshold = atof(argv[2]);
+	}
+	if(argc == 4)
+	{
+		WThreshold = atof(argv[1]);
+		FThreshold = atof(argv[2]);
+		DiscardThreshold = atof(argv[3]);
+	}*/
+	//initialize the queue
 	MQueue = (Queue *)malloc(sizeof(Queue));
 	MQueue->QnodeNum = 0;
 	MQueue->StartQnode = (Qnode *)malloc(sizeof(Qnode));
@@ -170,20 +190,16 @@ int main(int argc, char * argv[])
 
 	//judge m and n
 	char str[MEMSIZE];
-	int TotalTransactionNum;
-	get_size(m,TotalTransactionNum);
-	UsedTransactionNum = TotalTransactionNum;
-	TransactionArray = (Transaction *)malloc(TotalTransactionNum*sizeof(Transaction));
+	get_size(m);
+	
+	UsedTransactionNum = m;
+	TransactionArray = (Transaction *)malloc(m*sizeof(Transaction));
 	FILE * fr = fopen(ReadFileName,"r");
-	int k1;
-	k1 = 0;
 	for( int i = 0; i < m; i ++)
 	{//transfer each line of the data into a Transaction, we regard that there are no more than 20000 letters each line
 		fgets(str,MEMSIZE,fr);
-		k1 = make_transaction(TransactionArray,k1,str);
+		make_transaction(TransactionArray,i,str);
 	}
-	if(k1!=TotalTransactionNum)
-		fprintf(stderr,"error1\n");
 	fclose(fr);
 	//till now, all the data in the file has been read into the memory
 	//initial the structure of the Tree
@@ -191,12 +207,12 @@ int main(int argc, char * argv[])
 	MTree = (Tree *)malloc(sizeof(MTree));
 	MTree->TnodeNum = 0;
 	MTree->Root = (Tnode *)malloc(sizeof(Tnode));
-	MTree->Root->TTransactionNum = TotalTransactionNum;
+	MTree->Root->TTransactionNum = m;
 	MTree->Root->TTransaction = (Transaction *)malloc(MTree->Root->TTransactionNum * sizeof(Transaction));//allocate memory for the Transaction in the root
 	for( int i = 0; i < MTree->Root->TTransactionNum; i ++)
 	{
 		MTree->Root->TTransaction[i].ItemArray = TransactionArray[i].ItemArray;//copy all the elements in the TransactionArray into the MTree
-		MTree->Root->TTransaction[i].ItemNum = TransactionArray[i].ItemNum;
+		MTree->Root->TTransaction[i].PacketNum = TransactionArray[i].PacketNum;
 	}
 	MTree->Root->ChildTnodeArray = NULL;
 	MTree->Root->ChildTnodeNum = 0;
@@ -240,21 +256,13 @@ int main(int argc, char * argv[])
 	//		fprintf(fw,"reach end\n");
 		if((float)UsedTransactionNum / MTree->Root->TTransactionNum < CoverThreshold)
 		{
-			while(MQueue->QnodeNum)
-			{
-				TmpTnode = de_queue();
-				fprintf(fw,"	Numof-Tran:%5d	\n",TmpTnode->TTransactionNum);
-				for( int i = 0; i < TmpTnode->TLevel; i ++)
-					fprintf(fw,"(@%d)%s %c ",TmpTnode->TItem[i].ISeqNum,TmpTnode->TItem[i].Pload,hex_asc(TmpTnode->TItem[i].Pload)==10?160:hex_asc(TmpTnode->TItem[i].Pload));
-				fprintf(fw,"\n");
-			}
-			break;
+			StepParaVariation *= 5;
 		}
 		if(TmpTnode->ChildTnodeNum)
 			continue;
 		fprintf(fw,"Numof-Tran:%5d	\n",TmpTnode->TTransactionNum);
 		for( int i = 0; i < TmpTnode->TLevel; i ++)
-			fprintf(fw,"(@%d)%s %c ",TmpTnode->TItem[i].ISeqNum,TmpTnode->TItem[i].Pload, hex_asc(TmpTnode->TItem[i].Pload)==10?160:hex_asc(TmpTnode->TItem[i].Pload));
+			fprintf(fw,"(@%d %d)%s %c ",TmpTnode->TItem[i].PacketSeqNum, TmpTnode->TItem[i].ByteSeqNum,TmpTnode->TItem[i].Pload, hex_asc(TmpTnode->TItem[i].Pload)==10?160:hex_asc(TmpTnode->TItem[i].Pload));
 		fprintf(fw,"\n");
 	}
 	//fprintf(fw,"TnodeNum: %d\n",MTree->TnodeNum);
@@ -281,31 +289,31 @@ int hex_asc(char * hex)
 	return asc;
 }
 
-void get_size(int & m, int & TotalTransactionNum)
+void get_size(int & m)
 {
 	char letter;
-	char lastletter;
-	lastletter = 0;
 	m = 0;
-	TotalTransactionNum = 0;
 	FILE * fr = fopen(ReadFileName,"r");
 	while(letter = getc(fr))
 	{
 		if(letter == '\n')
 			m ++;
-		if(lastletter == ' ' && letter == '!')
-			TotalTransactionNum ++;
 		if(letter == EOF)
 			break;
-		lastletter = letter;
 	}
 	fclose(fr);
 }
 
-int make_transaction(Transaction * T,int TransactionSeqNum, char * str)
+void make_transaction(Transaction * T,int TransactionSeqNum, char * str)
 {//read the data in a line into a Transaction
 	//extract each 6 letters into a item
-	int PacketNum[PACKETNUMSIZE] = {0};
+	T[TransactionSeqNum].PacketNum = (int *)malloc(PACKETNUMSIZE*sizeof(int));
+	T[TransactionSeqNum].ItemArray = (Item **)malloc(PACKETNUMSIZE*sizeof(Item *));
+	for( int i = 0; i < PACKETNUMSIZE; i ++)
+	{
+		T[TransactionSeqNum].PacketNum[i] = 0;//initialize all the packetnumber into 0
+		T[TransactionSeqNum].ItemArray[i] = 0;
+	}
 	
 	for( int i = 0, j = 0; str[i*8] != 10 && j < PACKETNUMSIZE; i ++)
 		{
@@ -314,28 +322,24 @@ int make_transaction(Transaction * T,int TransactionSeqNum, char * str)
 					j ++;
 					continue;
 				}
-			PacketNum[j]++;// record the length(number of items) of current Transaction
+			T[TransactionSeqNum].PacketNum[j]++;// record the length(number of items) of current Transaction
 		}
-	for( int i = 0; i < PACKETNUMSIZE && PacketNum[i]; i ++)
-	{
-		T[TransactionSeqNum + i].ItemNum = PacketNum[i];
-		T[TransactionSeqNum + i].ItemArray = (Item *)malloc(sizeof(Item) * PacketNum[i]);
-	}
-	for( int i = 0,k = 0; str[i*8] != 10; i ++)
+	for( int i = 0; i < PACKETNUMSIZE && T[TransactionSeqNum].PacketNum[i]; i ++)
+		T[TransactionSeqNum].ItemArray[i] = (Item *)malloc(sizeof(Item) * T[TransactionSeqNum].PacketNum[i]);
+	for( int i = 0, j = 0, k = 0; str[i*8] != 10 && j < PACKETNUMSIZE; i ++)
 		{
 			if(str[i*8] == '!')
 				{
-				TransactionSeqNum ++;//row ++
+				j ++;//row ++
 				k = 0;// column set to 0
 				continue;
 				}
-			make_item(T[TransactionSeqNum].ItemArray + k, k, str + i*8);
+			make_item((T[TransactionSeqNum].ItemArray[j]) + k,j,k, str + i*8);
 			k ++;
 		}
-	return TransactionSeqNum;
 }
 
-void make_item(Item * I,int k, char * str)
+void make_item(Item * I,int j, int k, char * str)
 {//read each letter into the item
 	
 	/*int number1 = 0, number2 = 0;
@@ -352,33 +356,41 @@ void make_item(Item * I,int k, char * str)
 
 	//This part can be used for checksum
 
-	I->ISeqNum = k;
+	I->PacketSeqNum = j;
+	I->ByteSeqNum = k;
 	I->Pload[0] = str[5];
 	I->Pload[1] = str[6];
 	I->Pload[2] = '\0';
 	I->Support = 0;
 	I->IsVisited = 0;
 }
+
 void calculate_support(Item * I, Tnode * MTnode)
 {//calulate the number of Transaction including a certain item
-        for( int i = 0; i < MTnode->TTransactionNum; i ++) 
-        {//for a given item, we only need to compare the item at the corresponding position of other Transactions
-                if( I->ISeqNum >= MTnode->TTransaction[i].ItemNum)
-                        continue;// if the sequential number of chosen item exceed the range of items in current Transaction
-                if( !(strcmp(MTnode->TTransaction[i].ItemArray[I->ISeqNum].Pload,I->Pload)))
-                {// if current Transaction includes the item
-                        MTnode->TTransaction[i].ItemArray[I->ISeqNum].IsVisited = 1;
-                        I->Support ++;
-                }           
-        }   
-	if(I->Support > MMostItem.MaxNum)
-        {//recording the item with the most frequency
+	int MissingNum,SameNum;
+	MissingNum = 0;
+	SameNum = 0;
+	for( int i = 0; i < MTnode->TTransactionNum; i ++)
+	{//for a given item, we only need to compare the item at the corresponding position of other Transactions
+		if(MTnode->TTransaction[i].PacketNum[I->PacketSeqNum] <= I->ByteSeqNum)
+		{
+			MissingNum ++;
+			continue;// if the sequential number of chosen item exceed the range of items in current Transaction
+		}
+		if( !(strcmp(MTnode->TTransaction[i].ItemArray[I->PacketSeqNum][I->ByteSeqNum].Pload,I->Pload)))
+		{// if current Transaction includes the item
+			SameNum ++;
+			MTnode->TTransaction[i].ItemArray[I->PacketSeqNum][I->ByteSeqNum].IsVisited = 1;
+		}
+	}
+	I->Support = (float)SameNum + (float)MissingNum * SameNum/MTnode->TTransactionNum * SameNum/(MTnode->TTransactionNum - MissingNum);
+	if(I->Support > MMostItem.MaxSupport)
+	{//recording the item with the most frequency
 		MMostItem.MaxSupport = I->Support;
-                MMostItem.MaxNum = I->Support;
-                MMostItem.MItem = I; 
-        }           
+		MMostItem.MItem = I;
+		MMostItem.MaxNum = SameNum;
+	}
 }
-
 
 void make_split(Tree* MTree, Tnode * Root)
 {//get all the children of a certain node
@@ -460,11 +472,13 @@ void make_split(Tree* MTree, Tnode * Root)
 
 int is_matrix(Tnode * ThisNode)
 {
-	for( int j = 1; j < ThisNode->TTransactionNum; j ++)
+	int TotalItemNum;
+	for( int j = 0; j < ThisNode->TTransactionNum; j ++)
 	{
-		if(ThisNode->TTransaction[j].ItemNum != ThisNode->TTransaction[j-1].ItemNum)
-			return 0;
-		if(ThisNode->TLevel < ThisNode->TTransaction[j].ItemNum)
+		TotalItemNum = 0;
+		for( int l = 0; l < PACKETNUMSIZE && ThisNode->TTransaction[j].PacketNum[l]; l ++)
+			TotalItemNum += ThisNode->TTransaction[j].PacketNum[l];
+		if(ThisNode->TLevel < TotalItemNum)
 			return 0;
 	}
 	return 1;
@@ -472,7 +486,8 @@ int is_matrix(Tnode * ThisNode)
 
 void copy_item(Item * A, Item * B)
 {
-	A->ISeqNum= B->ISeqNum;
+	A->PacketSeqNum= B->PacketSeqNum;
+	A->ByteSeqNum= B->ByteSeqNum;
 	strcpy(A->Pload,B->Pload);
 	A->Support = 0;
 }
@@ -481,31 +496,34 @@ void copy_item(Item * A, Item * B)
 void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tnode * Created2)
 {//deviding the Transactions into to clusters and save them into Created1 and Created2 irrespectively
 	MMostItem.MaxNum = 0;
+	MMostItem.MaxSupport = 0;
 	MMostItem.MItem = NULL;
 	for(int i = 0, s = 0; i < Root->TTransactionNum; i ++)
 		//get the item as the most frequent item
-		for( int j = 0; j < Root->TTransaction[i].ItemNum; j ++)
-			if(!Root->TTransaction[i].ItemArray[j].IsVisited)
-			{
-				for( int l = 0; l < Root->TLevel; l ++)
-					if(( j == Root->TItem[l].ISeqNum ) && !(strcmp(Root->TTransaction[i].ItemArray[j].Pload,Root->TItem[l].Pload)))
+		for( int j = 0; j < PACKETNUMSIZE; j ++)
+			for(int  k = 0; k < Root->TTransaction[i].PacketNum[j]; k ++)
+				if(!(Root->TTransaction[i].ItemArray[j][k].IsVisited))
 					{
-						s = 1;
-						break;
+					for( int l = 0; l < Root->TLevel; l ++)
+						if(( j == Root->TItem[l].PacketSeqNum ) && ( k == Root->TItem[l].ByteSeqNum) && !(strcmp(Root->TTransaction[i].ItemArray[j][k].Pload,Root->TItem[l].Pload)))
+							{
+							s = 1;
+							break;
+							}
+					if(s == 1)
+						{
+						s = 0;
+						continue;
+						}				
+					calculate_support(Root->TTransaction[i].ItemArray[j]+k,Root);
 					}
-				if(s == 1)
-				{
-					s = 0;
-					continue;
-				}				
-				calculate_support(Root->TTransaction[i].ItemArray+j,Root);
-			}
 	for( int i = 0; i < Root->TTransactionNum; i ++)
-		for( int j = 0; j < Root->TTransaction[i].ItemNum; j ++)
-		{
-			Root->TTransaction[i].ItemArray[j].IsVisited = 0;
-			Root->TTransaction[i].ItemArray[j].Support = 0;
-		}
+		for( int j = 0; j < PACKETNUMSIZE; j ++)
+			for( int k = 0; k < Root->TTransaction[i].PacketNum[j]; k ++)
+				{
+				Root->TTransaction[i].ItemArray[j][k].IsVisited = 0;
+				Root->TTransaction[i].ItemArray[j][k].Support = 0;
+				}
 	Created1->TTransactionNum = MMostItem.MaxNum;
 	Created1->TTransaction = (Transaction *)malloc(Created1->TTransactionNum * sizeof(Transaction));
 	Created1->ChildTnodeArray = NULL;
@@ -521,7 +539,7 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 	int sign = 0;
 	for(int i = 0; i < Root->TLevel; i ++)
 	{
-		if( MMostItem.MItem->ISeqNum > Root->TItem[i].ISeqNum)
+		if( MMostItem.MItem->PacketSeqNum > Root->TItem[i].PacketSeqNum || (MMostItem.MItem->PacketSeqNum == Root->TItem[i].PacketSeqNum &&  MMostItem.MItem->ByteSeqNum > Root->TItem[i].ByteSeqNum))
 			copy_item(Created1->TItem + i,Root->TItem + i);
 		else if(sign == 0)
 		{
@@ -572,16 +590,16 @@ void step_split_differentlevel(Tree * MTree, Tnode * Root, Tnode * Created1, Tno
 	
 	//spliting the Transactions
 	for( int i = 0,j = 0,k = 0; i < Root->TTransactionNum; i ++)
-		if( Root->TTransaction[i].ItemNum > MMostItem.MItem->ISeqNum && !strcmp(Root->TTransaction[i].ItemArray[MMostItem.MItem->ISeqNum].Pload,MMostItem.MItem->Pload))
+		if( Root->TTransaction[i].PacketNum[MMostItem.MItem->PacketSeqNum] > MMostItem.MItem->ByteSeqNum && !strcmp(Root->TTransaction[i].ItemArray[MMostItem.MItem->PacketSeqNum][MMostItem.MItem->ByteSeqNum].Pload,MMostItem.MItem->Pload))
 		{
 			Created1->TTransaction[j].ItemArray = Root->TTransaction[i].ItemArray;
-			Created1->TTransaction[j].ItemNum = Root->TTransaction[i].ItemNum;
+			Created1->TTransaction[j].PacketNum = Root->TTransaction[i].PacketNum;
 			j ++;
 		}
 		else
 		{
 			Created2->TTransaction[k].ItemArray = Root->TTransaction[i].ItemArray;
-			Created2->TTransaction[k].ItemNum = Root->TTransaction[i].ItemNum;
+			Created2->TTransaction[k].PacketNum = Root->TTransaction[i].PacketNum;
 			k ++;
 		}
 }
@@ -601,25 +619,27 @@ Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
 	int s = 0;
 	Created = (Tnode *)malloc(sizeof(Tnode));
 	for( int i = 0; i < Brother->TTransactionNum; i ++)
-		for( int j = 0; j < Brother->TTransaction[i].ItemNum; j ++)
-			if(!(Brother->TTransaction[i].ItemArray[j].IsVisited))
-			{
-				for( int l = 0; l < Brother->TLevel -1; l ++)
-					if(( j == Brother->TItem[l].ISeqNum ) && !strcmp(Brother->TTransaction[i].ItemArray[j].Pload,Brother->TItem[l].Pload))
-						s = 1;
-				if(s == 1)
-				{
-					s = 0;
-					continue;
-				}
-				calculate_support(Brother->TTransaction[i].ItemArray+j,Brother);
-			}
+		for( int j = 0; j < PACKETNUMSIZE; j ++)
+			for( int k = 0; k < Brother->TTransaction[i].PacketNum[j]; k ++)
+				if(!(Brother->TTransaction[i].ItemArray[j][k].IsVisited))
+					{
+					for( int l = 0; l < Brother->TLevel -1; l ++)
+						if(( j == Brother->TItem[l].PacketSeqNum ) &&( k == Brother->TItem[l].ByteSeqNum) && !strcmp(Brother->TTransaction[i].ItemArray[j][k].Pload,Brother->TItem[l].Pload))
+							s = 1;
+					if(s == 1)
+						{
+						s = 0;
+						continue;
+						}
+					calculate_support(Brother->TTransaction[i].ItemArray[j]+k,Brother);
+					}
 	for( int i = 0; i < Brother->TTransactionNum; i ++)
-		for( int j = 0; j < Brother->TTransaction[i].ItemNum; j ++)
-		{
-			Brother->TTransaction[i].ItemArray[j].IsVisited = 0;
-			Brother->TTransaction[i].ItemArray[j].Support = 0;
-		}
+		for( int j = 0; j < PACKETNUMSIZE; j ++)
+			for( int k = 0; k < Brother->TTransaction[i].PacketNum[j]; k ++)
+				{
+				Brother->TTransaction[i].ItemArray[j][k].IsVisited = 0;
+				Brother->TTransaction[i].ItemArray[j][k].Support = 0;
+				}
 
 	Transaction  * BTransaction;
 	BTransaction = (Transaction *)malloc(MMostItem.MaxNum*sizeof(Transaction));
@@ -633,9 +653,15 @@ Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
 	{
 	int sign = 0;
 //cc
+	/*for( int i = 0; i < Brother->TLevel-1; i ++)
+	{
+	fprintf(stderr,"Brother %d:(@%d %d) %s %c 	", i,Brother->TItem[i].PacketSeqNum, Brother->TItem[i].ByteSeqNum,Brother->TItem[i].Pload,hex_asc(Brother->TItem[i].Pload));
+	}
+	
+	fprintf(stderr,"\nMMostItem: (@%d %d) %s %c \n", MMostItem.MItem->PacketSeqNum, MMostItem.MItem->ByteSeqNum,MMostItem.MItem->Pload,hex_asc(MMostItem.MItem->Pload));*/
 	for( int i = 0; i < Brother->TLevel - 1; i ++)
 	{
-		if(MMostItem.MItem->ISeqNum > Brother->TItem[i].ISeqNum)
+		if(MMostItem.MItem->PacketSeqNum > Brother->TItem[i].PacketSeqNum || ( MMostItem.MItem->PacketSeqNum == Brother->TItem[i].PacketSeqNum && MMostItem.MItem->ByteSeqNum > Brother->TItem[i].ByteSeqNum))
 			copy_item(BItem + i, Brother->TItem + i);
 		else if( sign == 0)
 		{
@@ -681,16 +707,16 @@ Tnode * step_split_samelevel(Tree * MTree, Tnode * Brother)
 	Brother->FatherTnode->ChildTnodeNum ++;
 
 	for( int i = 0,j = 0,k = 0; i < Brother->TTransactionNum; i ++)
-		if( Brother->TTransaction[i].ItemNum > MMostItem.MItem->ISeqNum && !strcmp(Brother->TTransaction[i].ItemArray[MMostItem.MItem->ISeqNum].Pload,MMostItem.MItem->Pload))
+		if( Brother->TTransaction[i].PacketNum[MMostItem.MItem->PacketSeqNum] > MMostItem.MItem->ByteSeqNum && !strcmp(Brother->TTransaction[i].ItemArray[MMostItem.MItem->PacketSeqNum][MMostItem.MItem->ByteSeqNum].Pload,MMostItem.MItem->Pload))
 		{
 			BTransaction[j].ItemArray = Brother->TTransaction[i].ItemArray;
-			BTransaction[j].ItemNum = Brother->TTransaction[i].ItemNum;
+			BTransaction[j].PacketNum = Brother->TTransaction[i].PacketNum;
 			j ++;
 		}
 		else
 		{
 			Created->TTransaction[k].ItemArray = Brother->TTransaction[i].ItemArray;
-			Created->TTransaction[k].ItemNum= Brother->TTransaction[i].ItemNum;
+			Created->TTransaction[k].PacketNum= Brother->TTransaction[i].PacketNum;
 			k ++;
 		}
 

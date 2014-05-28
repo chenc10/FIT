@@ -1,4 +1,9 @@
-
+/*Readme:
+	It is used for  judging the type of application with the features extracted.
+	Input:
+		1. ReadFileName -r : the txt file after exerting TPTD
+		2. FeatureFileName -f : the txt file for recording featured extracted from a single application
+*/
 //output: 
 //		result.dat
 //output format description: 

@@ -32,7 +32,7 @@
 #define PACKETNUMSIZE 20
 char  ReadFileName[128] = "Dat.dat";
 char  WriteFileName[128] = "Result.result";
-float StepParaVariation = 0.007;
+float StepParaVariation = 0.002;
 float WThreshold = 0.05; 
 	//The first node after spliting covers more than a certain part(WThreshold) of all the transactions in the root node
 float FThreshold = 0;
@@ -167,7 +167,6 @@ int main(int argc, char * argv[])
 	MQueue->EndQnode->NextQnode = NULL;//node latter node to the virtual end node
 	MQueue->StartQnode->QTnode = NULL;//NULL in the virtual start node
 	MQueue->EndQnode->QTnode = NULL;//NULL in the virtual end node
-	fprintf(stderr,"a\n");
 	//judge m and n
 	char str[MEMSIZE];
 	int TotalTransactionNum;
@@ -185,7 +184,6 @@ int main(int argc, char * argv[])
 	if(k1!=TotalTransactionNum)
 		fprintf(stderr,"error1\n");
 	fclose(fr);
-	fprintf(stderr,"b\n");
 	//till now, all the data in the file has been read into the memory
 	//initial the structure of the Tree
 	Tree * MTree;
@@ -223,7 +221,6 @@ int main(int argc, char * argv[])
 	//en_queue(MTree->Root);
 	if( WThreshold < ((float)2)/MTree->Root->TTransactionNum)
 		WThreshold = ((float)2)/MTree->Root->TTransactionNum - 0.01;
-	fprintf(stderr,"c\n");
 	while(MQueue->QnodeNum)
 	{
 		TmpTnode = de_queue();
@@ -242,15 +239,7 @@ int main(int argc, char * argv[])
 	//		fprintf(fw,"reach end\n");
 		if((float)UsedTransactionNum / MTree->Root->TTransactionNum < CoverThreshold)
 		{
-			while(MQueue->QnodeNum)
-			{
-				TmpTnode = de_queue();
-				fprintf(fw,"	Numof-Tran:%5d	\n",TmpTnode->TTransactionNum);
-				for( int i = 0; i < TmpTnode->TLevel; i ++)
-					fprintf(fw,"(@%d)%s %c ",TmpTnode->TItem[i].ISeqNum,TmpTnode->TItem[i].Pload,hex_asc(TmpTnode->TItem[i].Pload)==10?160:hex_asc(TmpTnode->TItem[i].Pload));
-				fprintf(fw,"\n");
-			}
-			break;
+				StepParaVariation *= 5;
 		}
 		if(TmpTnode->ChildTnodeNum)
 			continue;
@@ -307,7 +296,6 @@ void get_size(int & m, int & TotalTransactionNum)
 int make_transaction(Transaction * T,int TransactionSeqNum, char * str)
 {//read the data in a line into a Transaction
 	//extract each 6 letters into a item
-	fprintf(stderr,"enter make_transaction\n");
 	int PacketNum[PACKETNUMSIZE] = {0};
 	
 	for( int i = 0, j = 0; str[i*8] != 10 && j < PACKETNUMSIZE; i ++)
@@ -319,7 +307,6 @@ int make_transaction(Transaction * T,int TransactionSeqNum, char * str)
 				}
 			PacketNum[j]++;// record the length(number of items) of current Transaction
 		}
-	fprintf(stderr," enter 1\n");
 	for( int i = 0; i < PACKETNUMSIZE && PacketNum[i]; i ++)
 	{
 		T[TransactionSeqNum + i].ItemNum = PacketNum[i];
@@ -355,13 +342,10 @@ void make_item(Item * I,int k, char * str)
 	number2 += str[4]>96 ? (str[4] - 87):(str[4]>64 ? (str[4] - 55):(str[4] - 48));*/
 
 	//This part can be used for checksum
-	fprintf(stderr,"mi_1\n");
-	fprintf(stderr,"%c %c\n",str[5],str[6]);
 	I->ISeqNum = k;
 	I->Pload[0] = str[5];
 	I->Pload[1] = str[6];
 	I->Pload[2] = '\0';
-	fprintf(stderr,"mi_2\n");
 	I->Support = 0;
 	I->IsVisited = 0;
 }
