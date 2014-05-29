@@ -1,0 +1,22 @@
+Numof-Tran:  111	
+(@2)02  
+Numof-Tran:   19	
+(@2)7D } 
+Numof-Tran:   16	
+(@2)6D m 
+Numof-Tran:   15	
+(@2)0D  
+Numof-Tran:   13	
+(@2)3D = 
+Numof-Tran:   13	
+(@2)5D ] 
+Numof-Tran:   12	
+(@2)2D - 
+
+
+90.4545% of all the Transactions are covered by this feature
+Parameter: 
+	FThreshold: 0.00;
+ 	WThreshold: 0.05;
+ 	DiscardThreshold: 0.60;
+ 	CoverThreshold: 0.80;

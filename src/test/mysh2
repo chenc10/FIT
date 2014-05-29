@@ -1,2 +1,0 @@
-g++ 9ASM*.cpp -o ASM
-ASM -i nids_sToc_udp  2>result

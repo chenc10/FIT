@@ -1,0 +1,8 @@
+
+
+0.0000% of all the Transactions are covered by this feature
+Parameter: 
+	FThreshold: 0.00;
+ 	WThreshold: 0.06;
+ 	DiscardThreshold: 0.59;
+ 	CoverThreshold: 0.80;

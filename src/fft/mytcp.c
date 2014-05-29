@@ -1102,6 +1102,7 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 		fp_client = fopen("nids_cTos_tcp","a+");
 		if(!fp_client)
 			exit(11);
+		fprintf(fp_client,"%d ",tptd_gparams.apptype);
 		packet = flow->client.sPacket;
 		clientpacketnum = 0;
 		while(packet && clientpacketnum < OUTPUT_FLOWSIZE)
@@ -1140,6 +1141,7 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 		if(!fp_server)
 			exit(12);
         	//fprintf(fp_server,"now begin write nids_sToc: %d ",serverpacketnum);
+		fprintf(fp_server,"%d \n", tptd_gparams.apptype);
 		packet = flow->server.sPacket;
 		serverpacketnum = 0;
 		while(packet && serverpacketnum < OUTPUT_FLOWSIZE)

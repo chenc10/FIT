@@ -1,0 +1,12 @@
+1-1.	F_tcp_cs:	http feature
+1-2.	F_tcp_sc:	http feature
+1-3.	F_udp_cs:	not bad, but was covered by qqxuanfeng	
+1-4.	F_udp_sc:	not bad, but was covered by qqxuanfeng
+	
+2-1.	P_tcp_cs:	http feature
+2-2.	P_tcp_sc:	no feature
+2-3.	P_udp_cs:	normal	
+2-4.	P_udp_sc:	normal
+	
+	but compared with qqxuanfeng, the first byte of udp is usually FE.
+	maybe it's a feature shared by qq system?
