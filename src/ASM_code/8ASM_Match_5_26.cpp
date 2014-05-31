@@ -151,7 +151,10 @@ int main(int argc, char * argv[])
 	for( int i = 0; fgets(str,MEMSIZE,fr); i ++)
 	{//transfer each line of the data into a Transaction, we regard that there are no more than 20000 letters each line
 		fprintf(wfr,"%d %d ", InitType, InitType == atoi(str));
-		str = str + 2;
+		if(str[1] == ' ')
+			str = str + 2;
+		else
+			str = str + 3;
 		make_transaction(MyTransaction,i,str);
 		fprintf(wfr,"%d\n",check(MyFeature, MyTransaction));
 	}

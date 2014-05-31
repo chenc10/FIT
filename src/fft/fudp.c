@@ -177,6 +177,8 @@ void TPTD_UDP_PRINTFLOW( TPTD_FFT_UDP_Flow * flow, int from_client)
 	FILE * fp_client;
 	FILE * fp_server;
 	TPTD_UDP_Data_Store * packet;
+	int already_begin;
+	already_begin = 0;
 	int payloadnum;
 	int clientpacketnum,serverpacketnum;
 	if( from_client)
@@ -185,11 +187,15 @@ void TPTD_UDP_PRINTFLOW( TPTD_FFT_UDP_Flow * flow, int from_client)
 		fp_client = fopen("nids_cTos_udp", "a+");
 		if(!fp_client)
 			exit(12);
-		fprintf(fp_client,"%d ",tptd_gparams.apptype);
 		for(packet = flow->client,clientpacketnum = 0;packet && clientpacketnum < flow->client_count; packet = packet->next, clientpacketnum ++)
 		{
 			for(payloadnum = 0; payloadnum < packet->payloadlen && payloadnum < OUTPUT_PACKET_SIZE; payloadnum ++)
 			{
+				if(already_begin == 0)
+				{
+					fprintf(fp_client,"%d ",tptd_gparams.apptype);
+					already_begin = 1;
+				}
 				fprintf(fp_client, "%02X", clientpacketnum);
 				fprintf(fp_client, "%03X", payloadnum);
 				fprintf(fp_client, "%02X ", (unsigned char)packet->payload[payloadnum]);
@@ -207,11 +213,15 @@ void TPTD_UDP_PRINTFLOW( TPTD_FFT_UDP_Flow * flow, int from_client)
 		fp_server = fopen("nids_sToc_udp", "a+");
 		if(!fp_server)
 			exit(12);
-		fprintf(fp_server,"%d ",tptd_gparams.apptype);
 		for( packet = flow->server, serverpacketnum = 0; packet && serverpacketnum < flow->server_count; packet = packet->next, serverpacketnum ++)
 		{
 			for(payloadnum = 0; payloadnum < packet->payloadlen && payloadnum < OUTPUT_PACKET_SIZE; payloadnum ++)
 			{
+				if(already_begin == 0)
+				{
+					fprintf(fp_server,"%d ", tptd_gparams.apptype);
+					already_begin = 1;
+				}
 				fprintf(fp_server, "%02X", serverpacketnum);
 				fprintf(fp_server, "%03X", payloadnum);
 				fprintf(fp_server, "%02X ", (unsigned char)packet->payload[payloadnum]);

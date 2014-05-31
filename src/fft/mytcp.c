@@ -1088,6 +1088,8 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 {
 	fprintf(stderr,"enter PRINTFLOW\n");
 	int clientpacketnum,serverpacketnum;
+	int already_begin;
+	already_begin = 0;
 	clientpacketnum = 0;
 	serverpacketnum = 0;
 	int payloadnum;
@@ -1102,7 +1104,6 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 		fp_client = fopen("nids_cTos_tcp","a+");
 		if(!fp_client)
 			exit(11);
-		fprintf(fp_client,"%d ",tptd_gparams.apptype);
 		packet = flow->client.sPacket;
 		clientpacketnum = 0;
 		while(packet && clientpacketnum < OUTPUT_FLOWSIZE)
@@ -1112,6 +1113,11 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 			payloadnum = 0;
 			while(payloadnum < packet->payloadlen && payloadnum < OUTPUT_PACKETSIZE)
 			{
+				if(already_begin == 0)
+				{
+					fprintf(fp_client, "%d ",tptd_gparams.apptype);
+					already_begin = 1;
+				}
 				fprintf(fp_client,"%02X",clientpacketnum);
 				fprintf(fp_client,"%03X",payloadnum);
 				fprintf(fp_client,"%02X ",(unsigned char)packet->payload[payloadnum]);
@@ -1141,7 +1147,6 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 		if(!fp_server)
 			exit(12);
         	//fprintf(fp_server,"now begin write nids_sToc: %d ",serverpacketnum);
-		fprintf(fp_server,"%d \n", tptd_gparams.apptype);
 		packet = flow->server.sPacket;
 		serverpacketnum = 0;
 		while(packet && serverpacketnum < OUTPUT_FLOWSIZE)
@@ -1149,6 +1154,11 @@ void TPTD_TCP_PRINTFLOW(TPTD_FFT_TCP_Flow * flow, int from_client)
 			payloadnum = 0;
                 	while(payloadnum < packet->payloadlen && payloadnum < OUTPUT_PACKETSIZE)
                		{
+				if( already_begin == 0)
+				{
+					fprintf(fp_server,"%d ", tptd_gparams.apptype);
+					already_begin = 1;
+				}	
                        		fprintf(fp_server,"%02X",serverpacketnum);
                         	fprintf(fp_server,"%03X",payloadnum);
                         	fprintf(fp_server,"%02X ",(unsigned char)packet->payload[payloadnum]);

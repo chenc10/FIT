@@ -30,11 +30,11 @@ do
 			;;
 	esac
 done
-echo $readfile
 
 ./exe/TPTD_at -r $readfile -n $Num 2>result
 
 AppType=${readfile%%.pcap}
+AppType=${AppType##*/}
 echo $AppType
 F_tcp_cs=$AppType"_F_tcp_cs"
 F_tcp_sc=$AppType"_F_tcp_sc"
