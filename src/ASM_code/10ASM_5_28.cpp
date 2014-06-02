@@ -131,11 +131,11 @@ void  en_queue(Tnode *);
 int is_matrix(Tnode *);
 Tnode * de_queue();
 int b = 0;
-
+int MethodType = 0;
 int main(int argc, char * argv[])
 {
 	int opt;
-	while((opt = getopt(argc,argv,"c:d:w:i:s:o:")) != EOF)
+	while((opt = getopt(argc,argv,"c:d:w:i:s:o:t:")) != EOF)
 	{
 		switch(opt)
 		{
@@ -159,6 +159,9 @@ int main(int argc, char * argv[])
 			break;
 		case 's':
 			StepParaVariation = atof(optarg);
+			break;
+		case 't':
+			MethodType = atoi(optarg);
 			break;
 		}
 	}
@@ -261,7 +264,7 @@ int main(int argc, char * argv[])
 		}
 		if(TmpTnode->ChildTnodeNum)
 			continue;
-		if(TmpTnode->TLevel == 1)
+		if(MethodType == 0 && TmpTnode->TLevel == 1)
 		{
 			fprintf(stderr,"only one item! dicard.\n");
 			UsedTransactionNum -= TmpTnode->TTransactionNum;

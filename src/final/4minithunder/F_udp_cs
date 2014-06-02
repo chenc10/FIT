@@ -1,10 +1,72 @@
-Numof-Tran:  834	
+Numof-Tran:   44	
+(@0 3)57 W 
+Numof-Tran:   39	
+(@0 3)4D M 
+Numof-Tran:   33	
+(@0 3)4E N 
+Numof-Tran:   32	
+(@0 3)58 X 
+Numof-Tran:   31	
+(@0 3)52 R 
+Numof-Tran:   30	
+(@0 3)4F O 
+Numof-Tran:   29	
+(@0 3)5C \ 
+Numof-Tran:   29	
+(@0 3)45 E 
+Numof-Tran:   27	
+(@0 3)50 P 
+Numof-Tran:   27	
+(@0 3)5A Z 
+Numof-Tran:   26	
+(@0 3)5B [ 
+Numof-Tran:   26	
+(@0 3)4C L 
+Numof-Tran:   26	
+(@0 3)54 T 
+Numof-Tran:   26	
+(@0 3)44 D 
+Numof-Tran:   25	
+(@0 3)40 @ 
+Numof-Tran:   25	
+(@0 3)42 B 
+Numof-Tran:   25	
+(@0 3)51 Q 
+Numof-Tran:   25	
+(@0 3)5F _ 
+Numof-Tran:   25	
+(@0 3)48 H 
+Numof-Tran:   25	
+(@0 3)49 I 
+Numof-Tran:   24	
+(@0 3)5E ^ 
+Numof-Tran:   24	
+(@0 3)56 V 
+Numof-Tran:   23	
+(@0 3)4A J 
+Numof-Tran:   23	
+(@0 3)53 S 
+Numof-Tran:   22	
+(@0 3)59 Y 
+Numof-Tran:   22	
+(@0 3)55 U 
+Numof-Tran:   21	
+(@0 3)46 F 
+Numof-Tran:   20	
+(@0 3)43 C 
+Numof-Tran:   20	
+(@0 3)41 A 
+Numof-Tran:   19	
+(@0 3)47 G 
+Numof-Tran:   18	
+(@0 3)5D ] 
+Numof-Tran:   12	
+(@0 3)4B K 
 
 
-
-100.0000% of all the Transactions are covered by this feature
+98.6811% of all the Transactions are covered by this feature
 Parameter: 
 	FThreshold: 0.00;
- 	WThreshold: 0.05;
+ 	WThreshold: 0.01;
  	DiscardThreshold: 0.60;
  	CoverThreshold: 0.80;
