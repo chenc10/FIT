@@ -11,14 +11,14 @@ Match Result
 			recall rate: .8163
 	F_tcp_sc:
 		total:  2841	
-			0-0:  2710	
-			0-1:  50	
-			1-0:  8	
-			1-1:  73	
+			0-0:  2813	
+			0-1:  0	
+			1-0:  1	
+			1-1:  27	
  
-			righteous rate: .9795
-			precision rate: .5934
-			recall rate: .9012
+			righteous rate: .9996
+			precision rate: 1.0000
+			recall rate: .9642
 	F_udp_cs:
 		total:  2888	
 			0-0:  1374	
@@ -42,14 +42,14 @@ Match Result
 			recall rate: .5918
 	P_tcp_sc:
 		total:  2841	
-			0-0:  1864	
-			0-1:  896	
-			1-0:  30	
-			1-1:  51	
+			0-0:  2813	
+			0-1:  0	
+			1-0:  14	
+			1-1:  14	
  
-			righteous rate: .6740
-			precision rate: .0538
-			recall rate: .6296
+			righteous rate: .9950
+			precision rate: 1.0000
+			recall rate: .5000
 	P_udp_cs:
 		total:  2888	
 			0-0:  2798	

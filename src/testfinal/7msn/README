@@ -1,4 +1,4 @@
-F_udp_sc
+F_tcp_sc
 modify the rate
 
 1-1.	F_tcp_cs:	not bad feature, can cover more than one packet
