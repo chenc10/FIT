@@ -97,7 +97,7 @@ int main(int argc, char * argv[])
 			MyFeature->FeatureSize[i] = 0;
 			for( int j = 0; str[j]; j ++)
 			{
-				if(str[j] == '(')
+				if(str[j] == '(' && str[j+1] && str[j+1] != ' ')
 				{
 					MyFeature->FeatureSize[i] ++;
 				}
@@ -110,27 +110,21 @@ int main(int argc, char * argv[])
 	{
 		MyFeature->FeatureItems[i] = (Item *)malloc(MyFeature->FeatureSize[i] * sizeof(Item));
 	}
-	for( int i = 0; i < MyFeature->FeatureNum; i ++)
-	{
-		for( int j = 0; j < 10; j ++)
-		{
-			MyFeature->FeatureItems[i][j].PacketSeqNum = 0;
-		}
-	}
+
 	for( int i = 0; fgets(str, MEMSIZE, FeatureFr); )
 	{
 		if(strlen(str) && str[0] == '(')
 		{
 			for( int j = 0, k = 0; str[j]; j ++)
 			{
-				if(str[j] == '(')
+				if(str[j] == '(' && str[j+1] && str[j+1] != ' ')
 				{
 					MyFeature->FeatureItems[i][k].PacketSeqNum = get_position(str + j + 2);
 					if(str[j+3] != ' ')
 						j ++;
 					MyFeature->FeatureItems[i][k].ByteSeqNum = get_position(str + j + 4);
 				}
-				if(str[j] == ')')
+				if(str[j] == ')' && str[j-1] != ' ')
 				{
 					MyFeature->FeatureItems[i][k].Pload[0] = str[j + 1];
 					MyFeature->FeatureItems[i][k].Pload[1] = str[j + 2];

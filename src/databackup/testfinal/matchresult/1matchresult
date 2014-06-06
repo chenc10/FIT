@@ -1,0 +1,81 @@
+Match Result
+	F_tcp_cs:
+		total:  4121	
+			0-0:  3289	
+			0-1:  126	
+			1-0:  271	
+			1-1:  435	
+ 
+			righteous rate: .9036
+			precision rate: .7754
+			recall rate: .6161
+	F_tcp_sc:
+		total:  2841	
+			0-0:  1418	
+			0-1:  119	
+			1-0:  275	
+			1-1:  1029	
+ 
+			righteous rate: .8613
+			precision rate: .8963
+			recall rate: .7891
+	F_udp_cs:
+		total:  2888	
+			0-0:  1386	
+			0-1:  107	
+			1-0:  6	
+			1-1:  1389	
+ 
+			righteous rate: .9608
+			precision rate: .9284
+			recall rate: .9956
+	F_udp_sc:
+		total:  203	
+			0-0:  138	
+			0-1:  10	
+			1-0:  3	
+			1-1:  52	
+ 
+			righteous rate: .9359
+			precision rate: .8387
+			recall rate: .9454
+ 
+	P_tcp_cs:
+		total:  4121	
+			0-0:  2944	
+			0-1:  471	
+			1-0:  302	
+			1-1:  404	
+ 
+			righteous rate: .8124
+			precision rate: .4617
+			recall rate: .5722
+	P_tcp_sc:
+		total:  2841	
+			0-0:  1537	
+			0-1:  0	
+			1-0:  1304	
+			1-1:  0	
+ 
+			righteous rate: .5410
+			precision rate: 			recall rate: 0
+	P_udp_cs:
+		total:  2888	
+			0-0:  1395	
+			0-1:  98	
+			1-0:  11	
+			1-1:  1384	
+ 
+			righteous rate: .9622
+			precision rate: .9338
+			recall rate: .9921
+	P_udp_sc:
+		total:  203	
+			0-0:  133	
+			0-1:  15	
+			1-0:  12	
+			1-1:  43	
+ 
+			righteous rate: .8669
+			precision rate: .7413
+			recall rate: .7818
