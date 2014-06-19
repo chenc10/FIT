@@ -13,12 +13,12 @@ Match Result
 		total:  2841	
 			0-0:  2635	
 			0-1:  0	
-			1-0:  81	
-			1-1:  125	
+			1-0:  80	
+			1-1:  126	
  
-			righteous rate: .9714
+			righteous rate: .9718
 			precision rate: 1.0000
-			recall rate: .6067
+			recall rate: .6116
 	F_udp_cs:
 		total:  2888	
 			0-0:  2795	

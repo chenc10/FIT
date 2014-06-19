@@ -1,0 +1,41 @@
+Match Result
+	F_udp_cs:
+		total:  2888	
+			0-0:  2744	
+			0-1:  18	
+			1-0:  26	
+			1-1:  100	
+ 
+			righteous rate: .9847
+			precision rate: .8474
+			recall rate: .7936
+	F_udp_sc:
+		total:  203	
+			0-0:  180	
+			0-1:  3	
+			1-0:  2	
+			1-1:  18	
+ 
+			righteous rate: .9753
+			precision rate: .8571
+			recall rate: .9000
+ 
+	P_udp_cs:
+		total:  2888	
+			0-0:  2744	
+			0-1:  18	
+			1-0:  27	
+			1-1:  99	
+ 
+			righteous rate: .9844
+			precision rate: .8461
+			recall rate: .7857
+	P_udp_sc:
+		total:  203	
+			0-0:  183	
+			0-1:  0	
+			1-0:  20	
+			1-1:  0	
+ 
+			righteous rate: .9014
+			precision rate: 			recall rate: 0

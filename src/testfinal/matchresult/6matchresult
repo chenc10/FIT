@@ -21,14 +21,14 @@ Match Result
 			recall rate: .7500
 	F_udp_cs:
 		total:  2888	
-			0-0:  2702	
-			0-1:  0	
-			1-0:  31	
-			1-1:  155	
+			0-0:  2693	
+			0-1:  9	
+			1-0:  25	
+			1-1:  161	
  
-			righteous rate: .9892
-			precision rate: 1.0000
-			recall rate: .8333
+			righteous rate: .9882
+			precision rate: .9470
+			recall rate: .8655
 	F_udp_sc:
 		total:  203	
 			0-0:  192	
